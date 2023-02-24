@@ -21,27 +21,18 @@ public class CommandLineParser {
         for (int i = 0; i < args.length; i++) {
             if (args[i].charAt(0) == '-') {
                 switch (args[i]) {
-                    case "-L" -> {
-                        setFollowSymlink();
-                    }
-                    case "--limit" -> {
-                        setLimit(++i);
-                    }
-                    case "--depth" -> {
-                        setDepth(++i);
-                    }
-                    default -> {
-                        throw new RuntimeException("Unknown option entered");
-                    }
+                    case "-L" -> setFollowSymlink();
+                    case "--limit" -> setLimit(++i);
+                    case "--depth" -> setDepth(++i);
+                    default -> throw new RuntimeException("Unknown option entered");
                 }
             }
-            else if (root == null) {
-                root = createRoot(new File(args[i]));
-            }
             else {
-                throw new RuntimeException("Re-entry root dir");
+                setRoot(args[i]);
             }
         }
+
+        //TODO: сделать проверку на то что root остался пустым и заполнить его дефолтным значением
 
         return new DuConfig(root, depth, limit, followSymlinks);
     }
@@ -68,16 +59,21 @@ public class CommandLineParser {
         followSymlinks = true;
     }
 
-    private static @NotNull Directory createRoot(@NotNull File rootFile) {
+    private void setRoot(@NotNull String path) {
+        if (root != null) {
+            throw new RuntimeException("Re-entry root dir");
+        }
+
+        File rootFile = new File(path);
+
         if (!rootFile.exists()) {
-            // TODO: нормальный и перенести usage()
             throw new RuntimeException("Root dir doesn't exists");
         }
         if (rootFile.isFile()) {
             throw new RuntimeException("Root argument isn't dir");
         }
 
-        return new Directory(rootFile);
+        root = new Directory(rootFile);
     }
 
     private static int parseInt(String str) {

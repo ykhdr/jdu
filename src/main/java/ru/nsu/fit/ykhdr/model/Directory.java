@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.nsu.fit.ykhdr.DuUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Directory implements FileObj {
@@ -13,7 +14,7 @@ public class Directory implements FileObj {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return size;
     }
 
@@ -22,14 +23,18 @@ public class Directory implements FileObj {
         return 0;
     }
 
+    @Override
+    public String name() {
+        return file.getName();
+    }
 
-    // TODO: 22.02.2023 нужно как то делать обход. В конструкторе сразу?
+
     public Directory(@NotNull File file) {
         this.file = file;
         childrenTraversal();
-        //TODO: здесь нужно заполнять childrenList
     }
 
+    //TODO: переделать с учетом глубины (?)
     private void childrenTraversal() {
         for (File childFile : file.listFiles()) {
             FileObj childrenFileObj = DuUtils.createFileObj(childFile);
@@ -39,7 +44,9 @@ public class Directory implements FileObj {
         }
     }
 
-    private List<FileObj> childrenList;
+    private final List<FileObj> childrenList = new ArrayList<>();
     private final File file;
-    private int size;
+    private long size = 0;
+
+    private int depth = 0;
 }

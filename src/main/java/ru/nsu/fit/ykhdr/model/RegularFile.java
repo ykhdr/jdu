@@ -10,7 +10,7 @@ public class RegularFile implements FileObj {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return size;
     }
 
@@ -19,11 +19,17 @@ public class RegularFile implements FileObj {
         return 0;
     }
 
+    @Override
+    public String name() {
+        return file.getName();
+    }
+
 
     public RegularFile(File file) {
         this.file = file;
+        this.size = file.length();
     }
 
     private final File file;
-    private int size;
+    private long size;
 }

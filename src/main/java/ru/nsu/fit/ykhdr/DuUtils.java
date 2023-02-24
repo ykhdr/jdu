@@ -1,12 +1,8 @@
 package ru.nsu.fit.ykhdr;
 
-import ru.nsu.fit.ykhdr.model.Directory;
-import ru.nsu.fit.ykhdr.model.FileObj;
-import ru.nsu.fit.ykhdr.model.RegularFile;
-import ru.nsu.fit.ykhdr.model.Symlink;
+import ru.nsu.fit.ykhdr.model.*;
 
 import java.io.File;
-import java.nio.file.Files;
 
 public class DuUtils {
     public static FileObj createFileObj(File file) {
@@ -14,6 +10,7 @@ public class DuUtils {
             throw new RuntimeException("something wrong...");
         }
 
+        //TODO: провeрить, входит ли сюда symlink
         if (file.isFile()) {
             return new RegularFile(file);
         }

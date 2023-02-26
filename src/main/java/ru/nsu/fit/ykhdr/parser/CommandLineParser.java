@@ -1,91 +1,103 @@
 package ru.nsu.fit.ykhdr.parser;
 
 import org.jetbrains.annotations.NotNull;
-import ru.nsu.fit.ykhdr.model.Directory;
-import ru.nsu.fit.ykhdr.model.DuConfig;
+import ru.nsu.fit.ykhdr.exception.DuArgumentException;
+import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandLineParser {
-    private Directory root = null;
+
+    private final List<String> args;
+
+    private Path rootPath;
     private int depth = 5;
     private int limit = 0;
-    private boolean followSymlinks = false;
-    private final String[] args;
+    private boolean followSymlink = false;
 
-    public CommandLineParser(@NotNull String[] args) {
-        this.args = args;
+    public CommandLineParser(String[] args) {
+        this.args = Arrays.asList(args);
     }
 
-    public @NotNull DuConfig parse() {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].charAt(0) == '-') {
-                switch (args[i]) {
+    public @NotNull DuConfig createConfig() {
+        setArguments();
+        return new DuConfig(rootPath, depth, limit, followSymlink);
+    }
+
+    private void setArguments() {
+        boolean skipValue = false;
+
+        for (String arg : args) {
+            if (skipValue) {
+                skipValue = false;
+                continue;
+            }
+            if (arg.startsWith("-")) {
+                switch (arg) {
                     case "-L" -> setFollowSymlink();
-                    case "--limit" -> setLimit(++i);
-                    case "--depth" -> setDepth(++i);
-                    default -> throw new RuntimeException("Unknown option entered");
+                    case "--limit" -> {
+                        setLimit(nextArgument(arg));
+                        skipValue = true;
+                    }
+                    case "--depth" -> {
+                        setDepth(nextArgument(arg));
+                        skipValue = true;
+                    }
+                    default -> throw new DuArgumentException("unknown option", arg);
                 }
             }
             else {
-                setRoot(args[i]);
+                setRootPath(arg);
             }
         }
+        if (rootPath == null) {
+            rootPath = Paths.get("./");
+        }
 
-        //TODO: сделать проверку на то что root остался пустым и заполнить его дефолтным значением
-
-        return new DuConfig(root, depth, limit, followSymlinks);
     }
 
-    private void setDepth(int i) {
+    private String nextArgument(String currArg) {
         try {
-            depth = parseInt(args[i]);
+            return args.get(args.indexOf(currArg) + 1);
         }
-        catch (NullPointerException e) {
-            throw new RuntimeException(e);
+        catch (IndexOutOfBoundsException e) {
+            throw new DuArgumentException("option must have parameter", currArg);
         }
     }
 
-    private void setLimit(int i) {
-        try {
-            limit = parseInt(args[i]);
+    private void setRootPath(String root) {
+        if (rootPath != null) {
+            throw new DuArgumentException("root entered twice", root);
         }
-        catch (NullPointerException e) {
-            throw new RuntimeException(e);
-        }
+
+        rootPath = Path.of(root);
     }
 
     private void setFollowSymlink() {
-        followSymlinks = true;
+        followSymlink = true;
     }
 
-    private void setRoot(@NotNull String path) {
-        if (root != null) {
-            throw new RuntimeException("Re-entry root dir");
-        }
-
-        File rootFile = new File(path);
-
-        if (!rootFile.exists()) {
-            throw new RuntimeException("Root dir doesn't exists");
-        }
-        if (rootFile.isFile()) {
-            throw new RuntimeException("Root argument isn't dir");
-        }
-
-        root = new Directory(rootFile);
+    private void setLimit(@NotNull String arg) {
+        limit = parseInt(arg);
     }
 
-    private static int parseInt(String str) {
+    private void setDepth(@NotNull String arg) {
+        depth = parseInt(arg);
+    }
+
+    private static int parseInt(@NotNull String str) {
         try {
             int num = Integer.parseInt(str);
             if (num < 0) {
-                throw new RuntimeException("Incorrectly number entered : " + str);
+                throw new DuNumberFormatException("incorrectly number entered", num);
             }
             return num;
         }
         catch (NumberFormatException e) {
-            throw new RuntimeException(e);
+            throw new DuNumberFormatException("this parameter isn't a number", str);
         }
     }
 }

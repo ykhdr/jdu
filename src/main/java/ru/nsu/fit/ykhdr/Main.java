@@ -1,7 +1,13 @@
 package ru.nsu.fit.ykhdr;
 
-import ru.nsu.fit.ykhdr.model.DuConfig;
+import ru.nsu.fit.ykhdr.exception.DuArgumentException;
+import ru.nsu.fit.ykhdr.exception.DuException;
+import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
+import ru.nsu.fit.ykhdr.model.DuFile;
 import ru.nsu.fit.ykhdr.parser.CommandLineParser;
+import ru.nsu.fit.ykhdr.parser.DuConfig;
+import ru.nsu.fit.ykhdr.utils.TreeBuilder;
+import ru.nsu.fit.ykhdr.utils.TreePrinter;
 
 public class Main {
 
@@ -11,12 +17,23 @@ public class Main {
             return;
         }
 
-        // Argument parsing
         CommandLineParser parser = new CommandLineParser(args);
-        DuConfig config = parser.parse();
 
-        DuPrinter printer = new DuPrinter(config);
-        printer.printDirectoryTree();
+        try {
+            DuConfig config = parser.createConfig();
+            DuFile rootDir = TreeBuilder.build(config.root(),config.depth());
+
+            TreePrinter.print(rootDir);
+        }
+        catch (DuArgumentException | DuNumberFormatException e) {
+            System.err.println(e.getMessage());
+            System.err.println(usage());
+        }
+        catch (DuException e) {
+            System.err.println(e.getMessage());
+        }
+
+
     }
 
     static String usage() {

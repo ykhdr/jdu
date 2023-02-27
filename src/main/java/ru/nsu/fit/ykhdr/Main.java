@@ -4,24 +4,24 @@ import ru.nsu.fit.ykhdr.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.exception.DuException;
 import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
 import ru.nsu.fit.ykhdr.model.DuFile;
-import ru.nsu.fit.ykhdr.parser.CommandLineParser;
-import ru.nsu.fit.ykhdr.parser.DuConfig;
+import ru.nsu.fit.ykhdr.options.OptionsBuilder;
+import ru.nsu.fit.ykhdr.options.DuOptions;
 import ru.nsu.fit.ykhdr.utils.TreeBuilder;
 import ru.nsu.fit.ykhdr.utils.TreePrinter;
 
 public class Main {
 
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println(usage());
-            return;
-        }
+//        if (args.length == 0) {
+//            System.out.println(usage());
+//            return;
+//        }
 
-        CommandLineParser parser = new CommandLineParser(args);
+        OptionsBuilder optionsBuilder = new OptionsBuilder(args);
 
         try {
-            DuConfig config = parser.createConfig();
-            DuFile rootDir = TreeBuilder.build(config.root(),config.depth());
+            DuOptions options = optionsBuilder.build();
+            DuFile rootDir = TreeBuilder.build(options.root(),options.depth(), options.followSymlinks());
 
             TreePrinter.print(rootDir);
         }

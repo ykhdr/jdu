@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.parser;
+package ru.nsu.fit.ykhdr.options;
 
 import org.jetbrains.annotations.NotNull;
 import ru.nsu.fit.ykhdr.exception.DuArgumentException;
@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandLineParser {
+public class OptionsBuilder {
 
     private final List<String> args;
 
@@ -18,16 +18,16 @@ public class CommandLineParser {
     private int limit = 0;
     private boolean followSymlink = false;
 
-    public CommandLineParser(String[] args) {
+    public OptionsBuilder(String[] args) {
         this.args = Arrays.asList(args);
     }
 
-    public @NotNull DuConfig createConfig() {
-        setArguments();
-        return new DuConfig(rootPath, depth, limit, followSymlink);
+    public @NotNull DuOptions build() {
+        setOptions();
+        return new DuOptions(rootPath, depth, limit, followSymlink);
     }
 
-    private void setArguments() {
+    private void setOptions() {
         boolean skipValue = false;
 
         for (String arg : args) {
@@ -39,11 +39,11 @@ public class CommandLineParser {
                 switch (arg) {
                     case "-L" -> setFollowSymlink();
                     case "--limit" -> {
-                        setLimit(nextArgument(arg));
+                        setLimit(nextOption(arg));
                         skipValue = true;
                     }
                     case "--depth" -> {
-                        setDepth(nextArgument(arg));
+                        setDepth(nextOption(arg));
                         skipValue = true;
                     }
                     default -> throw new DuArgumentException("unknown option", arg);
@@ -59,12 +59,12 @@ public class CommandLineParser {
 
     }
 
-    private String nextArgument(String currArg) {
+    private String nextOption(String curOption) {
         try {
-            return args.get(args.indexOf(currArg) + 1);
+            return args.get(args.indexOf(curOption) + 1);
         }
         catch (IndexOutOfBoundsException e) {
-            throw new DuArgumentException("option must have parameter", currArg);
+            throw new DuArgumentException("option must have parameter", curOption);
         }
     }
 

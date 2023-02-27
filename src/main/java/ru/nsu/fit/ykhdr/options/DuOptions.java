@@ -1,8 +1,8 @@
-package ru.nsu.fit.ykhdr.parser;
+package ru.nsu.fit.ykhdr.options;
 
 import java.nio.file.Path;
 
-public record DuConfig(
+public record DuOptions(
         Path root,
         int depth,
         int limit,

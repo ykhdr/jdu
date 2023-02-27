@@ -7,4 +7,7 @@ public class DuIOException extends DuException{
         super(e);
     }
 
+    public DuIOException(String message) {
+        super(message);
+    }
 }

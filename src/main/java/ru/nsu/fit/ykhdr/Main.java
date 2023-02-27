@@ -12,11 +12,6 @@ import ru.nsu.fit.ykhdr.utils.TreePrinter;
 public class Main {
 
     public static void main(String[] args) {
-//        if (args.length == 0) {
-//            System.out.println(usage());
-//            return;
-//        }
-
         OptionsBuilder optionsBuilder = new OptionsBuilder(args);
 
         try {
@@ -32,8 +27,6 @@ public class Main {
         catch (DuException e) {
             System.err.println(e.getMessage());
         }
-
-
     }
 
     static String usage() {

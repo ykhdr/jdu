@@ -3,7 +3,7 @@ package ru.nsu.fit.ykhdr.utils;
 import org.jetbrains.annotations.NotNull;
 
 public class SizeConverter {
-    private final static int DELIMITER = 1024;
+    private static final int DELIMITER = 1024;
 
     private enum Dimension {
         BYTE("B"),

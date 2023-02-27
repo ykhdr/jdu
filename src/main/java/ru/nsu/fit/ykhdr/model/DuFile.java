@@ -3,6 +3,7 @@ package ru.nsu.fit.ykhdr.model;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.List;
 
 public sealed interface DuFile permits DuDirectory, DuRegularFile, DuSymlink {
@@ -11,4 +12,6 @@ public sealed interface DuFile permits DuDirectory, DuRegularFile, DuSymlink {
     long size();
 
     @NotNull String name();
+
+    @NotNull Path path();
 }

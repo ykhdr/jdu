@@ -1,17 +1,22 @@
 package ru.nsu.fit.ykhdr.utils;
 
 import org.jetbrains.annotations.NotNull;
+import ru.nsu.fit.ykhdr.exception.DuIOException;
 import ru.nsu.fit.ykhdr.model.DuDirectory;
 import ru.nsu.fit.ykhdr.model.DuFile;
 import ru.nsu.fit.ykhdr.model.DuRegularFile;
 import ru.nsu.fit.ykhdr.model.DuSymlink;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class TreePrinter {
     private enum ConsoleColor {
         TEXT_RESET("\u001B[0m"),
         TEXT_CYAN("\u001B[36m"),
+        TEXT_BRIGHT_CYAN("\u001B[96m"),
         TEXT_GREEN("\u001B[32m");
 
         private final String color;
@@ -46,24 +51,45 @@ public class TreePrinter {
     }
 
     private static void printDirectory(@NotNull DuFile dir, int depth) {
-        System.out.println("\t".repeat(depth)  + coloredText("/" + dir.name(), ConsoleColor.TEXT_GREEN) + size(dir));
+        System.out.println("\t".repeat(depth) +
+                coloredText("/" + dir.name(), ConsoleColor.TEXT_GREEN) +
+                size(dir));
         print(dir, depth + 1);
     }
 
     private static void printRegularFile(@NotNull DuFile file, int depth) {
-        System.out.println("\t".repeat(depth) + file.name() + size(file));
+        System.out.println("\t".repeat(depth) +
+                file.name() +
+                size(file));
     }
 
     private static void printSymlink(@NotNull DuFile link, int depth) {
-        System.out.println("\t".repeat(depth) + coloredText(link.name() + "@",ConsoleColor.TEXT_CYAN) + size(link));
-        print(link, depth);
+        System.out.println("\t".repeat(depth) +
+                coloredText(link.name() + "@" , ConsoleColor.TEXT_CYAN) + " -> " +
+                symlinkTarget(link) +
+                size(link));
+
+        print(link, depth + 1);
+    }
+
+    private static @NotNull String symlinkTarget(@NotNull DuFile link) {
+        return coloredText(readSymlinkTarget(link).toString(),ConsoleColor.TEXT_BRIGHT_CYAN);
+    }
+
+    private static @NotNull Path readSymlinkTarget(@NotNull DuFile link){
+        try {
+            return Files.readSymbolicLink(link.path());
+        }
+        catch (IOException e) {
+            throw new DuIOException(e);
+        }
     }
 
     private static @NotNull String size(@NotNull DuFile file) {
         return " [" + SizeConverter.convertToString(file.size()) + "]";
     }
 
-    private static @NotNull String coloredText(@NotNull String text, @NotNull ConsoleColor color){
+    private static @NotNull String coloredText(@NotNull String text, @NotNull ConsoleColor color) {
         return color.color + text + ConsoleColor.TEXT_RESET.color;
     }
 }

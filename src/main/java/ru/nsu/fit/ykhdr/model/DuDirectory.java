@@ -3,14 +3,10 @@ package ru.nsu.fit.ykhdr.model;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.List;
 
-public record DuDirectory(String name, List<DuFile> children, long size) implements DuFile {
-    public DuDirectory(@NotNull String name, @Nullable List<DuFile> children, long size) {
-        this.name = name;
-        this.children = children;
-        this.size = size;
-    }
+public record DuDirectory(@NotNull Path path, @Nullable List<DuFile> children, long size) implements DuFile {
 
     @Override
     public @Nullable List<DuFile> children() {
@@ -19,7 +15,10 @@ public record DuDirectory(String name, List<DuFile> children, long size) impleme
 
     @Override
     public @NotNull String name() {
-        return name;
+        return path.toFile().getName();
     }
 
+    public @NotNull Path path() {
+        return path;
+    }
 }

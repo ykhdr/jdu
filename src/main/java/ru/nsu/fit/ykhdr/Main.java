@@ -1,5 +1,6 @@
 package ru.nsu.fit.ykhdr;
 
+import org.apache.commons.cli.*;
 import ru.nsu.fit.ykhdr.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.exception.DuException;
 import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
@@ -11,7 +12,7 @@ import ru.nsu.fit.ykhdr.utils.TreePrinter;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         OptionsBuilder optionsBuilder = new OptionsBuilder(args);
 
         try {

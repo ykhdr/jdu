@@ -1,91 +1,94 @@
 package ru.nsu.fit.ykhdr.options;
 
+import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
 import ru.nsu.fit.ykhdr.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
+
+import org.apache.commons.cli.*;
 
 public class OptionsBuilder {
-
-    private final List<String> args;
-
-    private Path rootPath;
-    private int depth = 10;
-    private int limit = 5;
-    private boolean followSymlink = false;
+    private final String[] args;
 
     public OptionsBuilder(String[] args) {
-        this.args = Arrays.asList(args);
+        this.args = args;
     }
 
-    public @NotNull DuOptions build() {
-        setOptions();
+    public @NotNull DuOptions build() throws ParseException {
+        Options options = setOptions();
+        return parseOptions(options);
+    }
+
+    private @NotNull Options setOptions() {
+        Option depthOption = Option.builder().
+                longOpt("depth").
+                argName("depth").
+                hasArg().
+                desc("recursive depth (has default limit = 10)").
+                build();
+
+        Option limitOption = Option.builder().
+                longOpt("limit").
+                argName("limit").
+                hasArg().
+                desc("show n the heaviest files and/or dirs (has default limit = 5)").
+                build();
+
+        Option followSymlinkOption = Option.builder().
+                longOpt("L").
+                argName("followSymlink").
+                desc("follow symlinks").
+                build();
+
+        return new Options().addOption(depthOption).addOption(limitOption).addOption(followSymlinkOption);
+    }
+
+    private @NotNull DuOptions parseOptions(@NotNull Options options) {
+        CommandLine cmdLine = createCommandLine(options);
+
+        Path rootPath;
+        int depth = 10;
+        int limit = 5;
+        boolean followSymlink = false;
+
+        if (cmdLine.hasOption("depth")) {
+            depth = parseInt(cmdLine.getOptionValue("depth"));
+        }
+        if (cmdLine.hasOption("limit")) {
+            limit = parseInt(cmdLine.getOptionValue("limit"));
+        }
+        if (cmdLine.hasOption("L")) {
+            followSymlink = true;
+        }
+
+        rootPath = getPath(cmdLine);
+
         return new DuOptions(rootPath, depth, limit, followSymlink);
     }
 
-    private void setOptions() {
-        boolean skipValue = false;
-
-        for (String arg : args) {
-            if (skipValue) {
-                skipValue = false;
-                continue;
-            }
-            if (arg.startsWith("-")) {
-                switch (arg) {
-                    case "-L" -> setFollowSymlink();
-                    case "--limit" -> {
-                        setLimit(nextOption(arg));
-                        skipValue = true;
-                    }
-                    case "--depth" -> {
-                        setDepth(nextOption(arg));
-                        skipValue = true;
-                    }
-                    default -> throw new DuArgumentException("unknown option", arg);
-                }
-            }
-            else {
-                setRootPath(arg);
-            }
-        }
-        if (rootPath == null) {
-            rootPath = Paths.get("./");
-        }
-
-    }
-
-    private String nextOption(String curOption) {
+    private @NotNull CommandLine createCommandLine(@NotNull Options options) {
         try {
-            return args.get(args.indexOf(curOption) + 1);
+            return new DefaultParser().parse(options, args);
         }
-        catch (IndexOutOfBoundsException e) {
-            throw new DuArgumentException("option must have parameter", curOption);
+        catch (ParseException e) {
+            throw new DuArgumentException(e.getMessage());
         }
     }
 
-    private void setRootPath(String root) {
-        if (rootPath != null) {
-            throw new DuArgumentException("root entered twice", root);
+    private @NotNull Path getPath(@NotNull CommandLine cmdLine) {
+        if (cmdLine.getArgList().size() > 1) {
+            throw new DuArgumentException("Multiple directories entered");
         }
 
-        rootPath = Path.of(root);
-    }
-
-    private void setFollowSymlink() {
-        followSymlink = true;
-    }
-
-    private void setLimit(@NotNull String arg) {
-        limit = parseInt(arg);
-    }
-
-    private void setDepth(@NotNull String arg) {
-        depth = parseInt(arg);
+        if (cmdLine.getArgList().isEmpty()) {
+            return Path.of("./");
+        }
+        else {
+            return Paths.get(cmdLine.getArgList().get(0));
+        }
     }
 
     private static int parseInt(@NotNull String str) {

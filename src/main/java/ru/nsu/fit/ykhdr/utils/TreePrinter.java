@@ -57,20 +57,20 @@ public class TreePrinter {
     }
 
     private static void printDirectory(@NotNull DuFile dir, int depth) {
-        System.out.println("\t".repeat(depth) +
+        System.out.println("  ".repeat(depth) +
                 coloredText("/" + dir.name(), ConsoleColor.TEXT_GREEN) +
                 size(dir));
         print(dir, depth + 1);
     }
 
     private static void printRegularFile(@NotNull DuFile file, int depth) {
-        System.out.println("\t".repeat(depth) +
+        System.out.println("  ".repeat(depth) +
                 file.name() +
                 size(file));
     }
 
     private static void printSymlink(@NotNull DuFile link, int depth) {
-        System.out.println("\t".repeat(depth) +
+        System.out.println("  ".repeat(depth) +
                 coloredText(link.name() + "@", ConsoleColor.TEXT_CYAN) + " -> " +
                 symlinkTarget(link) +
                 size(link));

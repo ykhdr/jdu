@@ -26,7 +26,11 @@ public class TreeBuilder {
         TreeBuilder.followSymlink = followSymlink;
         TreeBuilder.visited = new HashSet<>();
 
-        return build(root, 0);
+        DuFile fileRoot = build(root, 0);
+
+        visited = null;
+        
+        return fileRoot;
     }
 
     private static @NotNull DuFile build(@NotNull Path curPath, int depth) {

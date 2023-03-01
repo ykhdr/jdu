@@ -16,9 +16,8 @@ public class Main {
 
         try {
             DuOptions options = optionsBuilder.build();
-            DuFile rootDir = TreeBuilder.build(options.root(),options.depth(), options.followSymlinks());
-
-            TreePrinter.print(rootDir);
+            DuFile rootDir = TreeBuilder.build(options.root(), options.depth(), options.followSymlinks());
+            TreePrinter.printTree(rootDir, options.limit());
         }
         catch (DuArgumentException | DuNumberFormatException e) {
             System.err.println(e.getMessage());
@@ -35,9 +34,9 @@ public class Main {
                     dir - root directory for scanning (has default current)
                    
                     options:
-                        - --depth n     - recursive depth
+                        - --depth n     - recursive depth (has default limit = 10)
                         - -L            - follow symlinks
-                        - --limit n     - show n the heaviest files and/or dirs (has default limit)
+                        - --limit n     - show n the heaviest files and/or dirs (has default limit = 5)
                 """;
     }
 }

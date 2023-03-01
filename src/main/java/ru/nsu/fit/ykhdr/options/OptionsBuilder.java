@@ -14,8 +14,8 @@ public class OptionsBuilder {
     private final List<String> args;
 
     private Path rootPath;
-    private int depth = 5;
-    private int limit = 0;
+    private int depth = 10;
+    private int limit = 5;
     private boolean followSymlink = false;
 
     public OptionsBuilder(String[] args) {
@@ -91,7 +91,7 @@ public class OptionsBuilder {
     private static int parseInt(@NotNull String str) {
         try {
             int num = Integer.parseInt(str);
-            if (num < 0) {
+            if (num < 1) {
                 throw new DuNumberFormatException("incorrectly number entered", num);
             }
             return num;

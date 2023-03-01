@@ -10,6 +10,7 @@ import ru.nsu.fit.ykhdr.model.DuSymlink;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 public class TreePrinter {
@@ -26,7 +27,10 @@ public class TreePrinter {
         }
     }
 
-    public static void print(@NotNull DuFile rootDir) {
+    private static int fileLimit = 5;
+
+    public static void printTree(@NotNull DuFile rootDir, int limit) {
+        fileLimit = limit;
         printDirectory(rootDir, 0);
     }
 
@@ -36,6 +40,8 @@ public class TreePrinter {
         if (children == null) {
             return;
         }
+
+        children = subLimitList(children);
 
         for (DuFile child : children) {
             if (child instanceof DuDirectory) {
@@ -65,7 +71,7 @@ public class TreePrinter {
 
     private static void printSymlink(@NotNull DuFile link, int depth) {
         System.out.println("\t".repeat(depth) +
-                coloredText(link.name() + "@" , ConsoleColor.TEXT_CYAN) + " -> " +
+                coloredText(link.name() + "@", ConsoleColor.TEXT_CYAN) + " -> " +
                 symlinkTarget(link) +
                 size(link));
 
@@ -73,16 +79,21 @@ public class TreePrinter {
     }
 
     private static @NotNull String symlinkTarget(@NotNull DuFile link) {
-        return coloredText(readSymlinkTarget(link).toString(),ConsoleColor.TEXT_BRIGHT_CYAN);
+        return coloredText(readSymlinkTarget(link).toString(), ConsoleColor.TEXT_BRIGHT_CYAN);
     }
 
-    private static @NotNull Path readSymlinkTarget(@NotNull DuFile link){
+    private static @NotNull Path readSymlinkTarget(@NotNull DuFile link) {
         try {
             return Files.readSymbolicLink(link.path());
         }
         catch (IOException e) {
             throw new DuIOException(e);
         }
+    }
+
+    private static @NotNull List<DuFile> subLimitList(List<DuFile> list){
+        list.sort(Comparator.comparing(DuFile::size).reversed());
+        return list.subList(0, Math.min(fileLimit, list.size()));
     }
 
     private static @NotNull String size(@NotNull DuFile file) {

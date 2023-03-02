@@ -23,23 +23,14 @@ public class SizeConverter {
     }
 
     private static @NotNull String matchDimension(long size) {
-        switch (countDegree(size)) {
-            case 0 -> {
-                return Dimension.BYTE.name;
-            }
-            case 1 -> {
-                return Dimension.KILOBYTE.name;
-            }
-            case 2 -> {
-                return Dimension.MEGABYTE.name;
-            }
-            default -> {
-                return Dimension.GIGABYTE.name;
-            }
-        }
+        return switch (countDegree(size)) {
+            case 0 -> Dimension.BYTE.name;
+            case 1 -> Dimension.KILOBYTE.name;
+            case 2 -> Dimension.MEGABYTE.name;
+            default -> Dimension.GIGABYTE.name;
+        };
     }
 
-    // TODO: 26.02.2023 продумать как можно избежать повторения кода (сделать специальную структуру для числа?)
     private static @NotNull String convertToDesiredSize(long size) {
         int remainder = 0;
         while (size / DELIMITER > 0) {

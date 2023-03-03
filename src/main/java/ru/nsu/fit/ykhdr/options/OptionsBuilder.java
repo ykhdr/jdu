@@ -17,7 +17,7 @@ public class OptionsBuilder {
         this.args = args;
     }
 
-    public @NotNull DuOptions build() throws ParseException {
+    public @NotNull DuOptions build() {
         Options options = setOptions();
         return parseOptions(options);
     }

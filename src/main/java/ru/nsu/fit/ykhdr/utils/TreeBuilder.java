@@ -30,7 +30,7 @@ public class TreeBuilder {
 
     private static @NotNull DuFile build(@NotNull Path curPath, Set<Path> visited, int depth) {
         if (Files.isSymbolicLink(curPath)) {
-            return buildSymlink(curPath, visited ,depth);
+            return buildSymlink(curPath, visited, depth);
         }
         else if (Files.isDirectory(curPath)) {
             return buildDirectory(curPath, visited, depth);
@@ -70,6 +70,10 @@ public class TreeBuilder {
             return new DuSymlink(path.toAbsolutePath(), null, 0);
         }
 
+        if (Files.isRegularFile(path)) {
+            return new DuSymlink(path.toAbsolutePath(), null, path.toFile().length());
+        }
+
         addToVisited(path, visited);
         List<DuFile> children = children(path, visited, depth);
         long size = size(children);
@@ -80,7 +84,6 @@ public class TreeBuilder {
         else {
             return new DuSymlink(path.toAbsolutePath(), children, size);
         }
-
     }
 
     private static @NotNull List<DuFile> children(@NotNull Path path, Set<Path> visited, int curDepth) {
@@ -112,7 +115,6 @@ public class TreeBuilder {
                 size += child.size();
             }
         }
-
         return size;
     }
 
@@ -123,7 +125,6 @@ public class TreeBuilder {
         catch (IOException e) {
             throw new DuIOException(e);
         }
-
     }
 
     private static boolean containsVisited(@NotNull Path path, Set<Path> visited) {

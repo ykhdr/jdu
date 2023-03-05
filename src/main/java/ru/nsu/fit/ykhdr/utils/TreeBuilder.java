@@ -17,40 +17,71 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * A utility class that allows you to build a tree based on several parameters and a root directory
+ *
+ */
+
 public class TreeBuilder {
-    private static int maxDepth;
-    private static boolean followSymlink;
 
-    public static @NotNull DuFile build(Path root, int maxDepth, boolean followSymlink) {
-        TreeBuilder.maxDepth = maxDepth;
-        TreeBuilder.followSymlink = followSymlink;
+    private final int maxDepth;
+    private final boolean followSymlink;
+    private final Set<Path> visited;
 
-        return build(root, new HashSet<>(), 0);
+    /**
+     * Creates a new TreeBuilder with the given depth parameter and flag for symlink navigation.
+     * <p>
+     * @param maxDepth
+     *        tree building depth.
+     * @param followSymlink
+     *        flag indicating the need to follow symlinks.
+     */
+    public TreeBuilder(int maxDepth, boolean followSymlink) {
+        this.maxDepth = maxDepth;
+        this.followSymlink = followSymlink;
+        this.visited = new HashSet<>();
     }
 
-    private static @NotNull DuFile build(@NotNull Path curPath, Set<Path> visited, int depth) {
+    /**
+     * Builds a new tree containing classes inherited from the DuFile interface from path to root directory.
+     * <p>
+     * @param root
+     *        path to root directory for building the tree.
+     * <p>
+     * @return new DuFile with children fully constructed to the given depth.
+     * <p>
+     * @throws DuIOException
+     *         if the file contained in the root directory tree was not defined as : directory, regular file, or symlink.
+     *         And also if the user does not have the necessary rights when accessing the directory / regular file / symlink.
+     */
+
+    public @NotNull DuFile build(Path root) {
+        return build(root, 0);
+    }
+
+    private @NotNull DuFile build(@NotNull Path curPath, int depth) {
         if (Files.isSymbolicLink(curPath)) {
-            return buildSymlink(curPath, visited, depth);
+            return buildSymlink(curPath, depth);
         }
         else if (Files.isDirectory(curPath)) {
-            return buildDirectory(curPath, visited, depth);
+            return buildDirectory(curPath, depth);
         }
         else if (Files.isRegularFile(curPath)) {
-            return buildRegularFile(curPath, visited);
+            return buildRegularFile(curPath);
         }
         else {
             throw new DuIOException("Unknown file is in this directory : " + curPath.toFile().getAbsolutePath());
         }
     }
 
-    private static @NotNull DuDirectory buildDirectory(@NotNull Path path, Set<Path> visited, int depth) {
-        if (containsVisited(path, visited)) {
+    private @NotNull DuDirectory buildDirectory(@NotNull Path path, int depth) {
+        if (containsVisited(path)) {
             return new DuDirectory(path.toAbsolutePath(), null, 0);
         }
 
-        addToVisited(path, visited);
+        addToVisited(path);
 
-        List<DuFile> children = children(path, visited, depth);
+        List<DuFile> children = children(path, depth);
         long size = size(children);
 
         if (depth >= maxDepth || children.isEmpty()) {
@@ -60,13 +91,13 @@ public class TreeBuilder {
         return new DuDirectory(path.toAbsolutePath(), children, size);
     }
 
-    private static @NotNull DuRegularFile buildRegularFile(@NotNull Path path, Set<Path> visited) {
-        addToVisited(path, visited);
+    private @NotNull DuRegularFile buildRegularFile(@NotNull Path path) {
+        addToVisited(path);
         return new DuRegularFile(path.toAbsolutePath(), path.toFile().length());
     }
 
-    private static @NotNull DuSymlink buildSymlink(@NotNull Path path, Set<Path> visited, int depth) {
-        if (containsVisited(path, visited)) {
+    private @NotNull DuSymlink buildSymlink(@NotNull Path path, int depth) {
+        if (containsVisited(path)) {
             return new DuSymlink(path.toAbsolutePath(), null, 0);
         }
 
@@ -74,8 +105,9 @@ public class TreeBuilder {
             return new DuSymlink(path.toAbsolutePath(), null, path.toFile().length());
         }
 
-        addToVisited(path, visited);
-        List<DuFile> children = children(path, visited, depth);
+
+        addToVisited(path);
+        List<DuFile> children = children(path, depth);
         long size = size(children);
 
         if (!followSymlink || depth >= maxDepth) {
@@ -86,14 +118,14 @@ public class TreeBuilder {
         }
     }
 
-    private static @NotNull List<DuFile> children(@NotNull Path path, Set<Path> visited, int curDepth) {
+    private @NotNull List<DuFile> children(@NotNull Path path, int curDepth) {
         List<DuFile> children = new ArrayList<>();
 
         try (Stream<Path> childrenStream = Files.list(path)) {
             List<Path> childrenList = childrenStream.toList();
 
             for (Path childPath : childrenList) {
-                DuFile childrenFile = build(childPath, visited, curDepth + 1);
+                DuFile childrenFile = build(childPath, curDepth + 1);
                 children.add(childrenFile);
             }
         }
@@ -118,7 +150,7 @@ public class TreeBuilder {
         return size;
     }
 
-    private static void addToVisited(@NotNull Path path, Set<Path> visited) {
+    private void addToVisited(@NotNull Path path) {
         try {
             visited.add(path.toRealPath());
         }
@@ -127,7 +159,7 @@ public class TreeBuilder {
         }
     }
 
-    private static boolean containsVisited(@NotNull Path path, Set<Path> visited) {
+    private boolean containsVisited(@NotNull Path path) {
         try {
             return visited.contains(path.toRealPath());
         }

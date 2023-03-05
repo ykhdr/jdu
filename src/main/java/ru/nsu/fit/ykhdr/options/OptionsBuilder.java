@@ -10,13 +10,31 @@ import java.nio.file.Paths;
 
 import org.apache.commons.cli.*;
 
+/**
+ * The class, based on the command line arguments given to it, creates a DuOptions object and returns it.
+ */
+
 public class OptionsBuilder {
     private final String[] args;
 
+    /**
+     * Creates new OptionsBuilder with command line arguments.
+     * <p>
+     * @param args
+     *        command line arguments.
+     */
     public OptionsBuilder(String[] args) {
         this.args = args;
     }
 
+    /**
+     * Creates a DuOptions object based on command line arguments with filled in options
+     * <p>
+     * @return DuOptions with options given on the command line.
+     * <p>
+     * @throws DuArgumentException if given on the command line options are incorrectly.
+     * @throws DuNumberFormatException if numeric argument parameters are not numbers.
+     */
     public @NotNull DuOptions build() {
         Options options = setOptions();
         return parseOptions(options);
@@ -82,7 +100,6 @@ public class OptionsBuilder {
         if (cmdLine.getArgList().size() > 1) {
             throw new DuArgumentException("Multiple directories entered");
         }
-
         if (cmdLine.getArgList().isEmpty()) {
             return Path.of("./");
         }

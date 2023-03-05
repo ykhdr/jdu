@@ -24,6 +24,7 @@ user@user:/.../jdu$ bash run.sh [program options]
 ```
 C:\...\jdu> bash -c "./run.sh" [program options]
 ```
+P.S. If you have already built the project, then this script will only launch the program
 
 ---
 
@@ -32,5 +33,3 @@ to run:
 ```
 java -jar jdu-1.0-SNAPSHOT-jar-with-dependencies.jar [program options]
 ```
-
-P.S. If you have already built the project, then this script will only launch the program

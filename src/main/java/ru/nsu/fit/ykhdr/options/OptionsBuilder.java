@@ -63,7 +63,6 @@ public class OptionsBuilder {
 
         return new Options().addOption(depthOption).addOption(limitOption).addOption(followSymlinkOption);
     }
-
     private @NotNull DuOptions parseOptions(@NotNull Options options) {
         CommandLine cmdLine = createCommandLine(options);
 

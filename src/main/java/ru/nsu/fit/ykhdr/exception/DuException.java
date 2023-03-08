@@ -5,6 +5,10 @@ package ru.nsu.fit.ykhdr.exception;
  */
 
 public abstract class DuException extends RuntimeException{
+    public DuException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public DuException(String message) {
         super(message);
     }

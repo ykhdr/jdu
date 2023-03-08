@@ -1,6 +1,5 @@
 package ru.nsu.fit.ykhdr;
 
-import org.apache.commons.cli.*;
 import ru.nsu.fit.ykhdr.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.exception.DuException;
 import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
@@ -12,20 +11,17 @@ import ru.nsu.fit.ykhdr.utils.TreePrinter;
 
 public class Main {
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         OptionsBuilder optionsBuilder = new OptionsBuilder(args);
 
         try {
             DuOptions options = optionsBuilder.build();
-            TreeBuilder treeBuilder = new TreeBuilder(options.depth(), options.followSymlinks());
-            DuFile rootDir = treeBuilder.build(options.root());
+            DuFile rootDir = TreeBuilder.build(options.root(),options.depth(),options.followSymlinks());
             TreePrinter.printTree(rootDir, options.limit());
-        }
-        catch (DuArgumentException | DuNumberFormatException e) {
+        } catch (DuArgumentException | DuNumberFormatException e) {
             System.err.println(e.getMessage());
             System.err.println(usage());
-        }
-        catch (DuException e) {
+        } catch (DuException e) {
             System.err.println(e.getMessage());
         }
     }

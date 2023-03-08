@@ -10,11 +10,10 @@ import ru.nsu.fit.ykhdr.model.DuSymlink;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 
 /**
- *  Utility class that prints the directory given to it.
+ * Utility class that prints the directory given to it.
  */
 
 public class TreePrinter {
@@ -34,13 +33,11 @@ public class TreePrinter {
     /**
      * Prints the tree of the given directory.
      * <p>
-     * @param rootDir
-     *        DuFile root directory for print.
-     * @param limit
-     *        the number of the heaviest directories displayed for each level.
-     * <p>
-     * @throws DuIOException
-     *         if the symlink target is not available or set incorrectly.
+     *
+     * @param rootDir DuFile root directory for print.
+     * @param limit   the number of the heaviest directories displayed for each level.
+     *                <p>
+     * @throws DuIOException if the symlink target is not available or set incorrectly.
      */
     public static void printTree(@NotNull DuFile rootDir, int limit) {
         printDirectory(rootDir, 0, limit);
@@ -58,11 +55,9 @@ public class TreePrinter {
         for (DuFile child : children) {
             if (child instanceof DuDirectory) {
                 printDirectory(child, depth, limit);
-            }
-            else if (child instanceof DuRegularFile) {
+            } else if (child instanceof DuRegularFile) {
                 printRegularFile(child, depth);
-            }
-            else if (child instanceof DuSymlink) {
+            } else if (child instanceof DuSymlink) {
                 printSymlink(child, depth, limit);
             }
         }
@@ -97,14 +92,13 @@ public class TreePrinter {
     private static @NotNull Path readSymlinkTarget(@NotNull DuFile link) {
         try {
             return Files.readSymbolicLink(link.path());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new DuIOException(e);
         }
     }
 
     private static @NotNull List<DuFile> subLimitList(List<DuFile> list, int limit) {
-        list.sort(Comparator.comparing(DuFile::size).reversed());
+        list.sort(new DuComparator());
         return list.subList(0, Math.min(limit, list.size()));
     }
 

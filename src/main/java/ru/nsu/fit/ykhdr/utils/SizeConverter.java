@@ -3,7 +3,7 @@ package ru.nsu.fit.ykhdr.utils;
 import org.jetbrains.annotations.NotNull;
 
 /**
- *  Utility class designed to convert the number of bytes to higher in the hierarchy of units in the string representation.
+ * Utility class designed to convert the number of bytes to higher in the hierarchy of units in the string representation.
  */
 
 public class SizeConverter {
@@ -25,11 +25,10 @@ public class SizeConverter {
     /**
      * Converts the number of bytes to a string representation of the size in a more appropriate dimension.
      * <p>
-     * @param size
-     *        number of bytes to convert.
-     * <p>
-     * @return
-     *        String representation of the converted size.
+     *
+     * @param size number of bytes to convert.
+     *             <p>
+     * @return String representation of the converted size.
      */
 
     public static @NotNull String convertToString(long size) {

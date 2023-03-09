@@ -40,6 +40,7 @@ public class TreePrinter {
      * @throws DuIOException if the symlink target is not available or set incorrectly.
      */
     public static void printTree(@NotNull DuFile rootDir, int limit) {
+        // CR: directory?
         printDirectory(rootDir, 0, limit);
     }
 

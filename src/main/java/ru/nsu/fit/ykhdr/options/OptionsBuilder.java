@@ -7,6 +7,7 @@ import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Function;
 
 import org.apache.commons.cli.*;
 
@@ -17,30 +18,9 @@ import org.apache.commons.cli.*;
 public class OptionsBuilder {
     private final String[] args;
 
-    /**
-     * Creates new OptionsBuilder with command line arguments.
-     * <p>
-     * @param args
-     *        command line arguments.
-     */
-    public OptionsBuilder(String[] args) {
-        this.args = args;
-    }
+    private static final Options DU_OPTIONS;
 
-    /**
-     * Creates a DuOptions object based on command line arguments with filled in options
-     * <p>
-     * @return DuOptions with options given on the command line.
-     * <p>
-     * @throws DuArgumentException if given on the command line options are incorrectly.
-     * @throws DuNumberFormatException if numeric argument parameters are not numbers.
-     */
-    public @NotNull DuOptions build() {
-        Options options = setOptions();
-        return parseOptions(options);
-    }
-
-    private @NotNull Options setOptions() {
+    static {
         Option depthOption = Option.builder().
                 longOpt("depth").
                 argName("depth").
@@ -61,10 +41,34 @@ public class OptionsBuilder {
                 desc("follow symlinks").
                 build();
 
-        return new Options().addOption(depthOption).addOption(limitOption).addOption(followSymlinkOption);
+        DU_OPTIONS = new Options().addOption(depthOption).addOption(limitOption).addOption(followSymlinkOption);
     }
-    private @NotNull DuOptions parseOptions(@NotNull Options options) {
-        CommandLine cmdLine = createCommandLine(options);
+
+    /**
+     * Creates new OptionsBuilder with command line arguments.
+     * <p>
+     * @param args
+     *        command line arguments.
+     */
+    public OptionsBuilder(String[] args) {
+        this.args = args;
+    }
+
+    /**
+     * Creates a DuOptions object based on command line arguments with filled in options
+     * <p>
+     * @return DuOptions with options given on the command line.
+     * <p>
+     * @throws DuArgumentException if given on the command line options are incorrectly.
+     * @throws DuNumberFormatException if numeric argument parameters are not numbers.
+     */
+    public @NotNull DuOptions build() {
+        return parseOptions();
+    }
+
+
+    private @NotNull DuOptions parseOptions() {
+        CommandLine cmdLine = createCommandLine(args);
 
         Path rootPath;
         int depth = 10;
@@ -86,9 +90,9 @@ public class OptionsBuilder {
         return new DuOptions(rootPath, depth, limit, followSymlink);
     }
 
-    private @NotNull CommandLine createCommandLine(@NotNull Options options) {
+    private static @NotNull CommandLine createCommandLine(@NotNull String[] args) {
         try {
-            return new DefaultParser().parse(options, args);
+            return new DefaultParser().parse(DU_OPTIONS, args);
         }
         catch (ParseException e) {
             throw new DuArgumentException(e.getMessage());
@@ -99,12 +103,8 @@ public class OptionsBuilder {
         if (cmdLine.getArgList().size() > 1) {
             throw new DuArgumentException("Multiple directories entered");
         }
-        if (cmdLine.getArgList().isEmpty()) {
-            return Path.of("./");
-        }
-        else {
-            return Paths.get(cmdLine.getArgList().get(0));
-        }
+        String path = cmdLine.getArgList().isEmpty() ? "./" : cmdLine.getArgList().get(0);
+        return Path.of(path);
     }
 
     private static int parseInt(@NotNull String str) {

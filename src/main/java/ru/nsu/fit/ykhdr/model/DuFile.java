@@ -14,6 +14,8 @@ public sealed interface DuFile permits DuDirectory, DuRegularFile, DuSymlink {
     /**
      * @return List of DuFile children of file.
      */
+    // CR: interface CompoundFile (children(): List<DuFile>)
+    // CR: just add to DuDirectory and DuSymlink
     @Nullable List<DuFile> children();
 
     /**
@@ -24,7 +26,10 @@ public sealed interface DuFile permits DuDirectory, DuRegularFile, DuSymlink {
     /**
      * @return Short filename.
      */
-    @NotNull String name();
+    // CR:
+    @NotNull default String name() {
+        return path().getFileName().toString();
+    }
 
     /**
      * @return Absolute path of file.

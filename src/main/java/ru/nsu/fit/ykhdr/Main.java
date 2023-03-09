@@ -4,8 +4,8 @@ import ru.nsu.fit.ykhdr.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.exception.DuException;
 import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
 import ru.nsu.fit.ykhdr.model.DuFile;
-import ru.nsu.fit.ykhdr.options.OptionsBuilder;
 import ru.nsu.fit.ykhdr.options.DuOptions;
+import ru.nsu.fit.ykhdr.options.OptionsBuilder;
 import ru.nsu.fit.ykhdr.utils.TreeBuilder;
 import ru.nsu.fit.ykhdr.utils.TreePrinter;
 
@@ -16,7 +16,7 @@ public class Main {
 
         try {
             DuOptions options = optionsBuilder.build();
-            DuFile rootDir = TreeBuilder.build(options.root(),options.depth(),options.followSymlinks());
+            DuFile rootDir = TreeBuilder.build(options.root(), options.depth(), options.followSymlinks());
             TreePrinter.printTree(rootDir, options.limit());
         } catch (DuArgumentException | DuNumberFormatException e) {
             System.err.println(e.getMessage());

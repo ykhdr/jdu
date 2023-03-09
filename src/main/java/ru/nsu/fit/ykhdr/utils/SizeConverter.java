@@ -36,6 +36,8 @@ public class SizeConverter {
     }
 
     private static @NotNull String matchDimension(long size) {
+//        Dimension.values().length
+//        Dimension.values()[countDegree(size)];
         return switch (countDegree(size)) {
             case 0 -> Dimension.BYTE.name;
             case 1 -> Dimension.KILOBYTE.name;

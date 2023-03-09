@@ -79,6 +79,20 @@ public class TreeBuilder {
     }
 
     private static @NotNull DuSymlink buildSymlink(@NotNull Path path, @NotNull Set<Path> visited, int depth) {
+        /*
+
+        slink -> foo
+
+
+          depth = 5
+
+
+        DuSymlink,
+        foo_file = build(foo)
+
+         */
+
+
         if (containsVisited(path, visited)) {
             return new DuSymlink(path.toAbsolutePath(), null, 0);
         }
@@ -147,6 +161,7 @@ public class TreeBuilder {
         }
     }
 
+    // CR: merge with addToVisited
     private static boolean containsVisited(@NotNull Path path, @NotNull Set<Path> visited) {
         try {
             return visited.contains(path.toRealPath());

@@ -16,8 +16,13 @@ public class Main {
 
         try {
             DuOptions options = optionsBuilder.build();
-            DuFile rootDir = TreeBuilder.build(options.root(), options.depth(), options.followSymlinks());
-            TreePrinter.printTree(rootDir, options.limit());
+
+            TreeBuilder treeBuilder = new TreeBuilder();
+            TreePrinter printer = new TreePrinter(options.limit(), options.depth(), options.followSymlinks());
+
+            DuFile rootDir = treeBuilder.build(options.root());
+            printer.print(rootDir);
+
         } catch (DuArgumentException | DuNumberFormatException e) {
             System.err.println(e.getMessage());
             System.err.println(usage());

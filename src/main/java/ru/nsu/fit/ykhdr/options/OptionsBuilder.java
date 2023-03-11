@@ -6,8 +6,6 @@ import ru.nsu.fit.ykhdr.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.function.Function;
 
 import org.apache.commons.cli.*;
 
@@ -17,6 +15,10 @@ import org.apache.commons.cli.*;
 
 public class OptionsBuilder {
     private final String[] args;
+
+    private int depth = 10;
+    private int limit = 5;
+    private boolean followSymlink = false;
 
     private static final Options DU_OPTIONS;
 
@@ -63,17 +65,7 @@ public class OptionsBuilder {
      * @throws DuNumberFormatException if numeric argument parameters are not numbers.
      */
     public @NotNull DuOptions build() {
-        return parseOptions();
-    }
-
-
-    private @NotNull DuOptions parseOptions() {
         CommandLine cmdLine = createCommandLine(args);
-
-        Path rootPath;
-        int depth = 10;
-        int limit = 5;
-        boolean followSymlink = false;
 
         if (cmdLine.hasOption("depth")) {
             depth = parseInt(cmdLine.getOptionValue("depth"));
@@ -85,17 +77,16 @@ public class OptionsBuilder {
             followSymlink = true;
         }
 
-        rootPath = getPath(cmdLine);
+        Path rootPath = getPath(cmdLine);
 
         return new DuOptions(rootPath, depth, limit, followSymlink);
     }
-
     private static @NotNull CommandLine createCommandLine(@NotNull String[] args) {
         try {
             return new DefaultParser().parse(DU_OPTIONS, args);
         }
         catch (ParseException e) {
-            throw new DuArgumentException(e.getMessage());
+            throw new DuArgumentException(e);
         }
     }
 
@@ -103,6 +94,7 @@ public class OptionsBuilder {
         if (cmdLine.getArgList().size() > 1) {
             throw new DuArgumentException("Multiple directories entered");
         }
+
         String path = cmdLine.getArgList().isEmpty() ? "./" : cmdLine.getArgList().get(0);
         return Path.of(path);
     }

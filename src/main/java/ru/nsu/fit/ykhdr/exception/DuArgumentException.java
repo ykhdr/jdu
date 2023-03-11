@@ -7,4 +7,8 @@ public class DuArgumentException extends DuException {
     public DuArgumentException(String message) {
         super(message);
     }
+
+    public DuArgumentException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -13,7 +13,8 @@ public class SizeConverter {
         BYTE("B"),
         KILOBYTE("KiB"),
         MEGABYTE("MiB"),
-        GIGABYTE("GiB");
+        GIGABYTE("GiB"),
+        TERABYTE("TB");
 
         private final String name;
 
@@ -36,14 +37,7 @@ public class SizeConverter {
     }
 
     private static @NotNull String matchDimension(long size) {
-//        Dimension.values().length
-//        Dimension.values()[countDegree(size)];
-        return switch (countDegree(size)) {
-            case 0 -> Dimension.BYTE.name;
-            case 1 -> Dimension.KILOBYTE.name;
-            case 2 -> Dimension.MEGABYTE.name;
-            default -> Dimension.GIGABYTE.name;
-        };
+        return Dimension.values()[countDegree(size)].name;
     }
 
     private static @NotNull String convertToDesiredSize(long size) {

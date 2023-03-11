@@ -10,9 +10,9 @@ import java.nio.file.Path;
  * @param depth
  *        tree depth.
  * @param limit
- *        the number of the heaviest directories displayed for each level.
+ *        the number of the heaviest directories displayed for each level for each directory.
  * @param followSymlinks
- *        flag indicating the need to follow symlinks
+ *        flag indicating whether the contents of the symlink should be printed.
  */
 
 public record DuOptions(

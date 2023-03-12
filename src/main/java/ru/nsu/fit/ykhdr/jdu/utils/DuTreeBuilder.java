@@ -1,8 +1,8 @@
-package ru.nsu.fit.ykhdr.utils;
+package ru.nsu.fit.ykhdr.jdu.utils;
 
 import org.jetbrains.annotations.NotNull;
-import ru.nsu.fit.ykhdr.exception.DuIOException;
-import ru.nsu.fit.ykhdr.model.*;
+import ru.nsu.fit.ykhdr.jdu.exception.DuIOException;
+import ru.nsu.fit.ykhdr.jdu.model.*;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  * A utility class that allows you to build a tree based on several parameters and a root directory
  */
 
-public class TreeBuilder {
+public class DuTreeBuilder {
     private final Set<Path> visited = new HashSet<>();
 
     /**
@@ -52,7 +52,12 @@ public class TreeBuilder {
     }
 
     private @NotNull DuRegularFile buildRegularFile(@NotNull Path path) {
-        return new DuRegularFile(path, path.toFile().length());
+        try {
+            return new DuRegularFile(path, Files.size(path));
+        }
+        catch (IOException e) {
+            throw new DuIOException(e);
+        }
     }
 
     private @NotNull DuSymlink buildSymlink(@NotNull Path path, int depth) {

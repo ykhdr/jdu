@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.exception;
+package ru.nsu.fit.ykhdr.jdu.exception;
 
 /**
  * Throws if command line arguments were entered incorrectly.
@@ -6,9 +6,5 @@ package ru.nsu.fit.ykhdr.exception;
 public class DuArgumentException extends DuException {
     public DuArgumentException(String message) {
         super(message);
-    }
-
-    public DuArgumentException(Throwable cause) {
-        super(cause);
     }
 }

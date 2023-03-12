@@ -1,10 +1,11 @@
-package ru.nsu.fit.ykhdr.utils;
+package ru.nsu.fit.ykhdr.jdu.utils;
 
 import org.jetbrains.annotations.NotNull;
-import ru.nsu.fit.ykhdr.exception.DuIOException;
-import ru.nsu.fit.ykhdr.model.*;
+import ru.nsu.fit.ykhdr.jdu.exception.DuIOException;
+import ru.nsu.fit.ykhdr.jdu.model.*;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -14,14 +15,16 @@ import java.util.List;
  * Utility class that prints the directory given to it.
  */
 
-public class TreePrinter {
+public class DuTreePrinter {
+    private final PrintStream printStream;
     private final int limit;
     private final int maxDepth;
     private final boolean followSymlinks;
     private static final String INDENTATION = "  ";
     private static final Comparator<DuFile> COMPARATOR = new DuComparator();
 
-    public TreePrinter(int limit, int maxDepth, boolean followSymlinks) {
+    public DuTreePrinter(PrintStream printStream, int limit, int maxDepth, boolean followSymlinks) {
+        this.printStream = printStream;
         this.limit = limit;
         this.maxDepth = maxDepth;
         this.followSymlinks = followSymlinks;
@@ -36,7 +39,7 @@ public class TreePrinter {
      * @throws DuIOException if the symlink target is not available or set incorrectly.
      */
     public void print(@NotNull DuFile root) {
-        choosePrint(root, 0);
+        matchType(root, 0);
     }
 
     private void print(@NotNull DuCompoundFile curDuFile, int depth) {
@@ -47,11 +50,11 @@ public class TreePrinter {
         List<DuFile> subChildren = subLimitList(curDuFile.children());
 
         for (DuFile child : subChildren) {
-            choosePrint(child, depth);
+            matchType(child, depth);
         }
     }
 
-    private void choosePrint(@NotNull DuFile file, int depth) {
+    private void matchType(@NotNull DuFile file, int depth) {
         switch (file) {
             case DuDirectory directory -> printDirectory(directory, depth);
             case DuSymlink symlink -> printSymlink(symlink, depth);
@@ -60,7 +63,7 @@ public class TreePrinter {
     }
 
     private void printDirectory(@NotNull DuDirectory dir, int depth) {
-        System.out.println(
+        printStream.println(
                 INDENTATION.repeat(depth) +
                         "/" +
                         dir.name() +
@@ -70,14 +73,14 @@ public class TreePrinter {
     }
 
     private void printRegularFile(@NotNull DuRegularFile file, int depth) {
-        System.out.println(
+        printStream.println(
                 INDENTATION.repeat(depth) +
                         file.name() +
                         size(file));
     }
 
     private void printSymlink(@NotNull DuSymlink link, int depth) {
-        System.out.println(
+        printStream.println(
                 INDENTATION.repeat(depth) +
                         link.name() +
                         "@ -> " +

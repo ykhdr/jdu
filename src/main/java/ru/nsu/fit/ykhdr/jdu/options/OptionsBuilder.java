@@ -1,10 +1,11 @@
-package ru.nsu.fit.ykhdr.options;
+package ru.nsu.fit.ykhdr.jdu.options;
 
 import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
-import ru.nsu.fit.ykhdr.exception.DuArgumentException;
-import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
+import ru.nsu.fit.ykhdr.jdu.exception.DuArgumentException;
+import ru.nsu.fit.ykhdr.jdu.exception.DuNumberFormatException;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.cli.*;
@@ -86,17 +87,22 @@ public class OptionsBuilder {
             return new DefaultParser().parse(DU_OPTIONS, args);
         }
         catch (ParseException e) {
-            throw new DuArgumentException(e);
+            throw new DuArgumentException(e.getMessage());
         }
     }
 
     private @NotNull Path getPath(@NotNull CommandLine cmdLine) {
         if (cmdLine.getArgList().size() > 1) {
-            throw new DuArgumentException("Multiple directories entered");
+            throw new DuArgumentException("Multiple root path entered");
         }
 
-        String path = cmdLine.getArgList().isEmpty() ? "./" : cmdLine.getArgList().get(0);
-        return Path.of(path);
+        Path rootPath = Path.of(cmdLine.getArgList().isEmpty() ? "./" : cmdLine.getArgList().get(0));
+
+        if(!Files.exists(rootPath)){
+            throw new DuArgumentException("File doesn't exist: " + rootPath);
+        }
+
+        return rootPath;
     }
 
     private static int parseInt(@NotNull String str) {

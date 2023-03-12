@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.utils;
+package ru.nsu.fit.ykhdr.jdu.utils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,8 +13,7 @@ public class SizeConverter {
         BYTE("B"),
         KILOBYTE("KiB"),
         MEGABYTE("MiB"),
-        GIGABYTE("GiB"),
-        TERABYTE("TB");
+        GIGABYTE("GiB");
 
         private final String name;
 

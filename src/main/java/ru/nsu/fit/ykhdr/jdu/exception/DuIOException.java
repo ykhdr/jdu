@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.exception;
+package ru.nsu.fit.ykhdr.jdu.exception;
 
 import java.io.IOException;
 

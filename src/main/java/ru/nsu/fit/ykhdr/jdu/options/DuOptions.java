@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.options;
+package ru.nsu.fit.ykhdr.jdu.options;
 
 import java.nio.file.Path;
 

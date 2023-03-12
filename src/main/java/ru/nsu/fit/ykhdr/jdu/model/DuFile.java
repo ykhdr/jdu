@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.model;
+package ru.nsu.fit.ykhdr.jdu.model;
 
 import org.jetbrains.annotations.NotNull;
 

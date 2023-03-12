@@ -1,13 +1,13 @@
-package ru.nsu.fit.ykhdr;
+package ru.nsu.fit.ykhdr.jdu;
 
-import ru.nsu.fit.ykhdr.exception.DuArgumentException;
-import ru.nsu.fit.ykhdr.exception.DuException;
-import ru.nsu.fit.ykhdr.exception.DuNumberFormatException;
-import ru.nsu.fit.ykhdr.model.DuFile;
-import ru.nsu.fit.ykhdr.options.DuOptions;
-import ru.nsu.fit.ykhdr.options.OptionsBuilder;
-import ru.nsu.fit.ykhdr.utils.TreeBuilder;
-import ru.nsu.fit.ykhdr.utils.TreePrinter;
+import ru.nsu.fit.ykhdr.jdu.exception.DuArgumentException;
+import ru.nsu.fit.ykhdr.jdu.exception.DuException;
+import ru.nsu.fit.ykhdr.jdu.exception.DuNumberFormatException;
+import ru.nsu.fit.ykhdr.jdu.model.DuFile;
+import ru.nsu.fit.ykhdr.jdu.options.DuOptions;
+import ru.nsu.fit.ykhdr.jdu.options.OptionsBuilder;
+import ru.nsu.fit.ykhdr.jdu.utils.DuTreeBuilder;
+import ru.nsu.fit.ykhdr.jdu.utils.DuTreePrinter;
 
 public class Main {
 
@@ -17,8 +17,8 @@ public class Main {
         try {
             DuOptions options = optionsBuilder.build();
 
-            TreeBuilder treeBuilder = new TreeBuilder();
-            TreePrinter printer = new TreePrinter(options.limit(), options.depth(), options.followSymlinks());
+            DuTreeBuilder treeBuilder = new DuTreeBuilder();
+            DuTreePrinter printer = new DuTreePrinter(System.out, options.limit(), options.depth(), options.followSymlinks());
 
             DuFile rootDir = treeBuilder.build(options.root());
             printer.print(rootDir);

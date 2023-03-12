@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.exception;
+package ru.nsu.fit.ykhdr.jdu.exception;
 
 /**
  * Thrown if the given option argument on the command line should be numeric, but is not.

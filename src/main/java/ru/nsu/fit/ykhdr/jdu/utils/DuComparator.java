@@ -1,6 +1,6 @@
-package ru.nsu.fit.ykhdr.utils;
+package ru.nsu.fit.ykhdr.jdu.utils;
 
-import ru.nsu.fit.ykhdr.model.DuFile;
+import ru.nsu.fit.ykhdr.jdu.model.DuFile;
 
 import java.util.Comparator;
 

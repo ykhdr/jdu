@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhdr.exception;
+package ru.nsu.fit.ykhdr.jdu.exception;
 
 /**
  * Instances should describe exceptions related to building options and using implementations of the DuFile interface.

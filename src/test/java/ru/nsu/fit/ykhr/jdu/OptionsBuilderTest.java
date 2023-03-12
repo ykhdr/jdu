@@ -67,12 +67,19 @@ public class OptionsBuilderTest extends DuTest {
     }
 
     @Test
-    public void pathOptionTest() {
-        String[] args = new String[]{};
+    public void pathOptionTest() throws IOException {
+        FileSystem fs = fileSystem();
+        Path fooPath = fs.getPath("/foo");
+        Files.createDirectory(fooPath);
 
-        OptionsBuilder builder = new OptionsBuilder(args);
+        String[] args1 = new String[]{};
+        String[] args2 = new String[]{"/foo"};
 
-        Assert.assertEquals(Path.of("./"), builder.build().root());
+        OptionsBuilder builder1 = new OptionsBuilder(args1);
+        OptionsBuilder builder2 = new OptionsBuilder(args2);
+
+        Assert.assertEquals(Path.of("./"), builder1.build().root());
+        Assert.assertEquals(fooPath,builder2.build().root());
     }
 
     @Test

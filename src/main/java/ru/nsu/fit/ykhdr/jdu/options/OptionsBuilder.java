@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import ru.nsu.fit.ykhdr.jdu.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.jdu.exception.DuNumberFormatException;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.cli.*;
@@ -96,13 +95,7 @@ public class OptionsBuilder {
             throw new DuArgumentException("Multiple root path entered");
         }
 
-        Path rootPath = Path.of(cmdLine.getArgList().isEmpty() ? "./" : cmdLine.getArgList().get(0));
-
-        if(!Files.exists(rootPath)){
-            throw new DuArgumentException("File doesn't exist: " + rootPath);
-        }
-
-        return rootPath;
+        return Path.of(cmdLine.getArgList().isEmpty() ? "./" : cmdLine.getArgList().get(0));
     }
 
     private static int parseInt(@NotNull String str) {

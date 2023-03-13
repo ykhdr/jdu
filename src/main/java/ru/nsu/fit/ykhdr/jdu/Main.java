@@ -9,6 +9,8 @@ import ru.nsu.fit.ykhdr.jdu.options.OptionsBuilder;
 import ru.nsu.fit.ykhdr.jdu.utils.DuTreeBuilder;
 import ru.nsu.fit.ykhdr.jdu.utils.DuTreePrinter;
 
+import java.nio.file.Files;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -16,6 +18,10 @@ public class Main {
 
         try {
             DuOptions options = optionsBuilder.build();
+
+            if(!Files.exists(options.root())){
+                throw new DuArgumentException("File doesn't exist: " + options.root());
+            }
 
             DuTreeBuilder treeBuilder = new DuTreeBuilder();
             DuTreePrinter printer = new DuTreePrinter(System.out, options.limit(), options.depth(), options.followSymlinks());

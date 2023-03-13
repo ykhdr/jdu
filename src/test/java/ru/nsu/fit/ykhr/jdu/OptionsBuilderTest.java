@@ -79,7 +79,7 @@ public class OptionsBuilderTest extends DuTest {
         OptionsBuilder builder2 = new OptionsBuilder(args2);
 
         Assert.assertEquals(Path.of("./"), builder1.build().root());
-        Assert.assertEquals(fooPath,builder2.build().root());
+        Assert.assertEquals(fooPath.toString(), builder2.build().root().toString());
     }
 
     @Test
@@ -177,27 +177,19 @@ public class OptionsBuilderTest extends DuTest {
         Files.createDirectory(foo);
         Files.createDirectory(bar);
 
-        String[] args1 = new String[]{"baz"};
-        String[] args2 = new String[]{"foo", "bar"};
+        String[] args = new String[]{"foo", "bar"};
 
-        OptionsBuilder builder1 = new OptionsBuilder(args1);
-        OptionsBuilder builder2 = new OptionsBuilder(args2);
+        OptionsBuilder builder = new OptionsBuilder(args);
 
-        DuArgumentException thrown1 = Assert.assertThrows(
+        DuArgumentException thrown = Assert.assertThrows(
                 DuArgumentException.class,
-                builder1::build);
-        DuArgumentException thrown2 = Assert.assertThrows(
-                DuArgumentException.class,
-                builder2::build);
+                builder::build);
 
-        String expectedMessage1 = "File doesn't exist: baz";
-        String actualMessage1 = thrown1.getMessage();
 
-        String expectedMessage2 = "Multiple root path entered";
-        String actualMessage2 = thrown2.getMessage();
+        String expectedMessage = "Multiple root path entered";
+        String actualMessage = thrown.getMessage();
 
-        Assert.assertEquals(actualMessage1, expectedMessage1);
-        Assert.assertEquals(actualMessage2, expectedMessage2);
+        Assert.assertEquals(actualMessage, expectedMessage);
     }
 
     @Test

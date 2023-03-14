@@ -8,6 +8,30 @@
 
 [Maven 3.9+](https://maven.apache.org/download.cgi)
 
+## Example
+```
+/tree [15.5 B]
+  /dir2 [10.0 B]
+    file2 [10.0 B]
+  /dir1 [5.5 B]
+    /bar [5.5 B]
+      /baz [5.5 B]
+        file1 [5.5 B]
+  file3 [0.0 B]
+  /dir3 [0.0 B]
+```
+
+## Options
+
+- ``--depth n``     - recursive depth (has default limit = 10)
+
+
+- ``-L``            - follow symlinks
+
+
+- ``--limit n ``    - show n the heaviest files and/or dirs (has default limit = 5)
+
+
 ## How to run?
 
 Use shell script `run.sh` in **jdu/** dir to build and run program:
@@ -24,7 +48,7 @@ user@user:/.../jdu$ bash run.sh [program options]
 ```
 C:\...\jdu> bash -c "./run.sh" [program options]
 ```
-P.S. If you have already built the project, then this script will only launch the program
+*P.S. If you have already built the project, then this script will only launch the program*
 
 ---
 

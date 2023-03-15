@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,13 +18,15 @@ import java.util.List;
 
 public class DuTreePrinter {
     private final PrintStream printStream;
+
     private final int limit;
     private final int maxDepth;
     private final boolean followSymlinks;
+
     private static final String INDENTATION = "  ";
     private static final Comparator<DuFile> COMPARATOR = new DuComparator();
 
-    public DuTreePrinter(PrintStream printStream, int limit, int maxDepth, boolean followSymlinks) {
+    public DuTreePrinter(@NotNull PrintStream printStream, int limit, int maxDepth, boolean followSymlinks) {
         this.printStream = printStream;
         this.limit = limit;
         this.maxDepth = maxDepth;
@@ -42,6 +45,7 @@ public class DuTreePrinter {
         matchType(root, 0);
     }
 
+    // CR: printCompoundFile
     private void print(@NotNull DuCompoundFile curDuFile, int depth) {
         if (depth > maxDepth) {
             return;
@@ -54,6 +58,7 @@ public class DuTreePrinter {
         }
     }
 
+    // CR: print
     private void matchType(@NotNull DuFile file, int depth) {
         switch (file) {
             case DuDirectory directory -> printDirectory(directory, depth);
@@ -63,6 +68,7 @@ public class DuTreePrinter {
     }
 
     private void printDirectory(@NotNull DuDirectory dir, int depth) {
+        // CR: Formatter?
         printStream.println(
                 INDENTATION.repeat(depth) +
                         "/" +
@@ -93,18 +99,15 @@ public class DuTreePrinter {
     }
 
     private static @NotNull String symlinkTarget(@NotNull DuFile link) {
-        return readSymlinkTarget(link).toString();
-    }
-
-    private static @NotNull Path readSymlinkTarget(@NotNull DuFile link) {
         try {
-            return Files.readSymbolicLink(link.path());
+            return Files.readSymbolicLink(link.path()).toString();
         } catch (IOException e) {
             throw new DuIOException(e);
         }
     }
 
     private @NotNull List<DuFile> subLimitList(@NotNull List<DuFile> list) {
+        // CR: not in-place sort
         list.sort(COMPARATOR);
         return list.subList(0, Math.min(limit, list.size()));
     }

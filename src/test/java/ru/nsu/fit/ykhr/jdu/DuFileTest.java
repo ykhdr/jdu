@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+// CR: merge to one test or remove
 public class DuFileTest extends DuTest {
     @Test
     public void regularFileTest() throws IOException {

@@ -12,6 +12,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+// CR: one small test
 public class DuComparatorTest extends DuTest {
     @Test
     public void testSameSize() throws IOException {

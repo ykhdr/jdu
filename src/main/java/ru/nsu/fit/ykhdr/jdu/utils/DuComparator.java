@@ -16,7 +16,6 @@ public class DuComparator implements Comparator<DuFile> {
      *         a value greater than 0 if o1.size() < o2.size();
      *         a value less than 0 if o1.size() > o2.size().
      */
-
     @Override
     public int compare(DuFile o1, DuFile o2) {
         return -Long.compare(o1.size(), o2.size());

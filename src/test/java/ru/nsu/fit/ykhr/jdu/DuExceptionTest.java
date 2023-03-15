@@ -9,6 +9,7 @@ import ru.nsu.fit.ykhr.jdu.core.DuTest;
 
 import java.io.IOException;
 
+// CR: remove
 public class DuExceptionTest extends DuTest {
     @Test
     public void duArgumentExceptionTest() {

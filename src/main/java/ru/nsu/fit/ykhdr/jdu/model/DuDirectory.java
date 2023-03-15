@@ -13,9 +13,6 @@ import java.util.List;
  * @param children child files of a directory. Can be null if directory is empty.
  * @param size     directory size.
  */
-public record DuDirectory(
-        @NotNull Path path,
-        @NotNull List<DuFile> children,
-        long size) implements DuFile, DuCompoundFile {
+public record DuDirectory(@NotNull Path path, @NotNull List<DuFile> children, long size) implements DuFile, DuCompoundFile {
 }
 

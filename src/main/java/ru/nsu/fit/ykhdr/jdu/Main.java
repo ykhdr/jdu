@@ -2,6 +2,7 @@ package ru.nsu.fit.ykhdr.jdu;
 
 import ru.nsu.fit.ykhdr.jdu.exception.DuArgumentException;
 import ru.nsu.fit.ykhdr.jdu.exception.DuException;
+import ru.nsu.fit.ykhdr.jdu.exception.DuIOException;
 import ru.nsu.fit.ykhdr.jdu.exception.DuNumberFormatException;
 import ru.nsu.fit.ykhdr.jdu.model.DuFile;
 import ru.nsu.fit.ykhdr.jdu.options.DuOptions;
@@ -14,10 +15,9 @@ import java.nio.file.Files;
 public class Main {
 
     public static void main(String[] args) {
-        OptionsBuilder optionsBuilder = new OptionsBuilder(args);
 
         try {
-            DuOptions options = optionsBuilder.build();
+            DuOptions options = OptionsBuilder.build(args);
 
             if(!Files.exists(options.root())){
                 throw new DuArgumentException("File doesn't exist: " + options.root());
@@ -29,11 +29,12 @@ public class Main {
             DuFile rootDir = treeBuilder.build(options.root());
             printer.print(rootDir);
 
-        } catch (DuArgumentException | DuNumberFormatException e) {
+        } catch (DuIOException e) {
+            System.err.println(e.getMessage());
+        }
+        catch (DuException e) {
             System.err.println(e.getMessage());
             System.err.println(usage());
-        } catch (DuException e) {
-            System.err.println(e.getMessage());
         }
     }
 

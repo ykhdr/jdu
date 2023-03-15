@@ -24,6 +24,5 @@ public sealed interface DuFile permits DuDirectory, DuRegularFile, DuSymlink {
     /**
      * @return Absolute path of file.
      */
-
     @NotNull Path path();
 }

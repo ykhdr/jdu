@@ -14,7 +14,6 @@ import org.apache.commons.cli.*;
  */
 
 public class OptionsBuilder {
-    private final String[] args;
 
     private int depth = 10;
     private int limit = 5;
@@ -22,9 +21,11 @@ public class OptionsBuilder {
 
     private static final Options DU_OPTIONS;
 
+    private OptionsBuilder() {}
+
     static {
-        Option depthOption = Option.builder().
-                longOpt("depth").
+        Option depthOption = Option.builder()
+                .longOpt("depth").
                 argName("depth").
                 hasArg().
                 desc("recursive depth (has default limit = 10)").
@@ -47,16 +48,6 @@ public class OptionsBuilder {
     }
 
     /**
-     * Creates new OptionsBuilder with command line arguments.
-     * <p>
-     * @param args
-     *        command line arguments.
-     */
-    public OptionsBuilder(String[] args) {
-        this.args = args;
-    }
-
-    /**
      * Creates a DuOptions object based on command line arguments with filled in options
      * <p>
      * @return DuOptions with options given on the command line.
@@ -64,8 +55,14 @@ public class OptionsBuilder {
      * @throws DuArgumentException if given on the command line options are incorrectly.
      * @throws DuNumberFormatException if numeric argument parameters are not numbers.
      */
-    public @NotNull DuOptions build() {
+    public static @NotNull DuOptions build(String[] args) {
+        return new OptionsBuilder().buildImpl(args);
+    }
+
+    private @NotNull DuOptions buildImpl(String[] args) {
         CommandLine cmdLine = createCommandLine(args);
+
+        Path rootPath = getPath(cmdLine);
 
         if (cmdLine.hasOption("depth")) {
             depth = parseInt(cmdLine.getOptionValue("depth"));
@@ -76,11 +73,9 @@ public class OptionsBuilder {
         if (cmdLine.hasOption("L")) {
             followSymlink = true;
         }
-
-        Path rootPath = getPath(cmdLine);
-
         return new DuOptions(rootPath, depth, limit, followSymlink);
     }
+
     private static @NotNull CommandLine createCommandLine(@NotNull String[] args) {
         try {
             return new DefaultParser().parse(DU_OPTIONS, args);
@@ -102,6 +97,7 @@ public class OptionsBuilder {
         try {
             int num = Integer.parseInt(str);
             if (num < 1) {
+                // CR: range for number?
                 throw new DuNumberFormatException("incorrectly number entered", num);
             }
             return num;

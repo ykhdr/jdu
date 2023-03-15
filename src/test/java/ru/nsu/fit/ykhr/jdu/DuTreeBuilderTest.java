@@ -16,6 +16,23 @@ import static ru.nsu.fit.ykhr.jdu.core.DuTreeElement.*;
 
 public class DuTreeBuilderTest extends DuTest {
 
+    /*
+
+    1. root is file
+    2. root is symlink
+    3. root is directory, no children
+    4. root is directory, one child (regular)
+    5. root is directory, one child (directory)
+    6. root is directory, one child (symlink)
+    7. root is symlink, resolves to directory
+    8. root is symlink, resolves to regular
+    9. root is symlink, resolves to symlink
+    10. cycles:
+        - symlink references itself?
+        - symlink to symlink to symlink
+        - symlink to parent dir
+     */
+
     @Test
     public void testOneFileInDirectory() throws IOException {
         FileSystem fs = fileSystem();
@@ -74,6 +91,7 @@ public class DuTreeBuilderTest extends DuTest {
 
     @Test
     public void testSymlinkTargetToFile() throws IOException {
+        // CR: comment with structure
         FileSystem fs = fileSystem();
         Path dirPath = fs.getPath("/foo");
         Files.createDirectory(dirPath);

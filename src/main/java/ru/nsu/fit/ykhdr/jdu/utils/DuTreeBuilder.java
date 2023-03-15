@@ -14,6 +14,7 @@ import java.util.stream.Stream;
  */
 
 public class DuTreeBuilder {
+
     private final Set<Path> visited = new HashSet<>();
 
     /**
@@ -27,7 +28,6 @@ public class DuTreeBuilder {
      * @throws DuIOException if the file contained in the root directory tree was not defined as : directory, regular file, or symlink.
      *                       And also if the user does not have the necessary rights when accessing the directory / regular file / symlink.
      */
-
     public @NotNull DuFile build(@NotNull Path root) {
         return build(root, 0);
     }
@@ -40,7 +40,13 @@ public class DuTreeBuilder {
         } else if (Files.isRegularFile(curPath)) {
             return buildRegularFile(curPath);
         } else {
-            throw new DuIOException("Unknown file is in this directory : " + curPath.toFile().getAbsolutePath());
+            /*
+            CR: choose one option:
+            1. stop building tree
+            2. warn user, do not add a node (logger, slf4j, log4j...)
+            3. warn user, add a node and hope that size works (if not then 2)
+             */
+            throw new DuIOException("Unknown file type for file " + curPath.toFile().getAbsolutePath());
         }
     }
 
@@ -61,6 +67,7 @@ public class DuTreeBuilder {
     }
 
     private @NotNull DuSymlink buildSymlink(@NotNull Path path, int depth) {
+        // CR: toRealPath as field, use in printer
         if (!visited.add(toRealPath(path))) {
             return new DuSymlink(path, new ArrayList<>(), 0);
         }
@@ -75,6 +82,7 @@ public class DuTreeBuilder {
         List<DuFile> children = new ArrayList<>();
 
         try (Stream<Path> childrenStream = streamPath(path)) {
+            // CR: stream
             List<Path> childrenList = childrenStream.toList();
 
             for (Path childPath : childrenList) {
@@ -115,6 +123,8 @@ public class DuTreeBuilder {
         } catch (NoSuchFileException ok) {
             return path;
         } catch (IOException e) {
+            // CR: merge with NoSuchFileException case
+            // CR: log
             throw new DuIOException(e);
         }
     }

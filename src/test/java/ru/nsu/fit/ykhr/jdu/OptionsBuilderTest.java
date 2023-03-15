@@ -18,8 +18,7 @@ public class OptionsBuilderTest extends DuTest {
     public void defaultOptionsTest() {
         String[] args = new String[]{};
         Path rootPath = Path.of("./");
-        OptionsBuilder builder = new OptionsBuilder(args);
-        DuOptions options = builder.build();
+        DuOptions options = OptionsBuilder.build(args);
 
         Assert.assertEquals(10, options.depth());
         Assert.assertEquals(5, options.limit());
@@ -44,6 +43,7 @@ public class OptionsBuilderTest extends DuTest {
 
     @Test
     public void limitOptionTest() {
+        // CR: only one test case
         String[] args1 = new String[]{"--limit", "2"};
         String[] args2 = new String[]{"--limit", "105"};
         String[] args3 = new String[]{"--limit", "999999"};
@@ -128,6 +128,7 @@ public class OptionsBuilderTest extends DuTest {
     @Test
     public void incorrectlyLimitOptionTest() {
         String[] args1 = new String[]{"--limit", "0"};
+        // CR: split into multiple tests
         String[] args2 = new String[]{"--limit", "-100"};
         String[] args3 = new String[]{"--limit", "a"};
         String[] args4 = new String[]{"--limit"};

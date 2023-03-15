@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class SizeConverter {
+
     private static final int DELIMITER = 1024;
 
     private enum Dimension {
@@ -39,6 +40,7 @@ public class SizeConverter {
         return Dimension.values()[countDegree(size)].name;
     }
 
+    // CR: merge using private static class
     private static @NotNull String convertToDesiredSize(long size) {
         int remainder = 0;
         while (size / DELIMITER > 0) {

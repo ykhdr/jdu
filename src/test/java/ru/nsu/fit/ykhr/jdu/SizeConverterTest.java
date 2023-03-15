@@ -10,6 +10,8 @@ public class SizeConverterTest extends DuTest {
     private final long BYTES_IN_MIB = 1048576;
     private final long BYTES_IN_GIB = 1073741824;
 
+    // CR: max long test
+
     @Test
     public void zeroByteTest() {
         Assert.assertEquals("0.0 B", SizeConverter.convertToString(0));

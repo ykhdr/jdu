@@ -11,7 +11,5 @@ import java.nio.file.Path;
  * @param path absolute path to file.
  * @param size file size.
  */
-public record DuRegularFile(
-        @NotNull Path path,
-        long size) implements DuFile {
+public record DuRegularFile(@NotNull Path path, long size) implements DuFile {
 }

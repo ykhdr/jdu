@@ -47,6 +47,10 @@ public class DuTreeBuilderTest extends DuTest {
         TestCase.assertEquals(expected, actual);
     }
 
+    /*
+    * structure:
+    *   /foo
+    * */
     @Test
     public void testOneDirectory() throws IOException {
         FileSystem fs = fileSystem();
@@ -59,6 +63,11 @@ public class DuTreeBuilderTest extends DuTest {
         TestCase.assertEquals(expected, actual);
     }
 
+    /*
+     * structure:
+     *  /foo
+     *    bar.txt
+     * */
     @Test
     public void testOneFile() throws IOException {
         FileSystem fs = fileSystem();
@@ -73,6 +82,13 @@ public class DuTreeBuilderTest extends DuTest {
         TestCase.assertEquals(expected, actual);
     }
 
+
+    /*
+    * structure:
+    *  /foo
+    *    /bar
+    *    /baz
+    * */
     @Test
     public void testTwoDirectoriesInDirectory() throws IOException {
         FileSystem fs = fileSystem();
@@ -89,9 +105,15 @@ public class DuTreeBuilderTest extends DuTest {
         TestCase.assertEquals(expected, actual);
     }
 
+    /*
+     *  structure:
+     *   /foo
+     *     bar.txt
+     *     link@ -> /foo/bar.txt
+     * */
     @Test
     public void testSymlinkTargetToFile() throws IOException {
-        // CR: comment with structure
+
         FileSystem fs = fileSystem();
         Path dirPath = fs.getPath("/foo");
         Files.createDirectory(dirPath);
@@ -106,8 +128,15 @@ public class DuTreeBuilderTest extends DuTest {
         TestCase.assertEquals(expected, actual);
     }
 
+    /*
+     * structure:
+     *   /foo
+     *     /bar
+     *     link@ -> /foo/bar
+     * */
     @Test
     public void testSymlinkTargetToDirectory() throws IOException {
+
         FileSystem fs = fileSystem();
         Path rootPath = fs.getPath("/foo");
         Files.createDirectory(rootPath);
@@ -124,6 +153,11 @@ public class DuTreeBuilderTest extends DuTest {
 
     @Test
     public void testSymlinkTargetToDirectoryWithFile() throws IOException {
+        /*
+        *
+        *
+        * */
+
         FileSystem fs = fileSystem();
         Path rootPath = fs.getPath("/foo");
         Files.createDirectory(rootPath);

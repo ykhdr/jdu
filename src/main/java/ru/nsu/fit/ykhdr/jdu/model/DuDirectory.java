@@ -15,4 +15,3 @@ import java.util.List;
  */
 public record DuDirectory(@NotNull Path path, @NotNull List<DuFile> children, long size) implements DuFile, DuCompoundFile {
 }
-

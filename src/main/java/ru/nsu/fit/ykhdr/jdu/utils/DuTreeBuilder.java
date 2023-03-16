@@ -21,24 +21,21 @@ public class DuTreeBuilder {
      * Builds a new tree containing classes inherited from the DuFile interface from path to root directory.
      * <p>
      *
-     * @param root path to root directory for building the tree.
+     * @param path path to root directory for building the tree.
      *             <p>
      * @return {@link DuFile} with fully constructed children.
      * <p>
      * @throws DuIOException if the file contained in the root directory tree was not defined as : directory, regular file, or symlink.
      *                       And also if the user does not have the necessary rights when accessing the directory / regular file / symlink.
      */
-    public @NotNull DuFile build(@NotNull Path root) {
-        return build(root, 0);
-    }
-
-    private @NotNull DuFile build(@NotNull Path curPath, int depth) {
-        if (Files.isSymbolicLink(curPath)) {
-            return buildSymlink(curPath, depth);
-        } else if (Files.isDirectory(curPath)) {
-            return buildDirectory(curPath, depth);
-        } else if (Files.isRegularFile(curPath)) {
-            return buildRegularFile(curPath);
+    @NotNull
+    public DuFile build(@NotNull Path path) {
+        if (Files.isSymbolicLink(path)) {
+            return buildSymlink(path);
+        } else if (Files.isDirectory(path)) {
+            return buildDirectory(path);
+        } else if (Files.isRegularFile(path)) {
+            return buildRegularFile(path);
         } else {
             /*
             CR: choose one option:
@@ -46,12 +43,12 @@ public class DuTreeBuilder {
             2. warn user, do not add a node (logger, slf4j, log4j...)
             3. warn user, add a node and hope that size works (if not then 2)
              */
-            throw new DuIOException("Unknown file type for file " + curPath.toFile().getAbsolutePath());
+            throw new DuIOException("Unknown file type for file " + path.toFile().getAbsolutePath());
         }
     }
 
-    private @NotNull DuDirectory buildDirectory(@NotNull Path path, int depth) {
-        List<DuFile> children = children(path, depth);
+    private @NotNull DuDirectory buildDirectory(@NotNull Path path) {
+        List<DuFile> children = children(path);
         long size = size(children);
 
         return new DuDirectory(path, children, size);
@@ -66,19 +63,19 @@ public class DuTreeBuilder {
         }
     }
 
-    private @NotNull DuSymlink buildSymlink(@NotNull Path path, int depth) {
+    private @NotNull DuSymlink buildSymlink(@NotNull Path path) {
         // CR: toRealPath as field, use in printer
         if (!visited.add(toRealPath(path))) {
             return new DuSymlink(path, new ArrayList<>(), 0);
         }
 
-        List<DuFile> children = children(path, depth);
+        List<DuFile> children = children(path);
         long size = size(children);
 
         return new DuSymlink(path, children, size);
     }
 
-    private @NotNull List<DuFile> children(@NotNull Path path, int curDepth) {
+    private @NotNull List<DuFile> children(@NotNull Path path) {
         List<DuFile> children = new ArrayList<>();
 
         try (Stream<Path> childrenStream = streamPath(path)) {
@@ -86,7 +83,7 @@ public class DuTreeBuilder {
             List<Path> childrenList = childrenStream.toList();
 
             for (Path childPath : childrenList) {
-                DuFile childrenFile = build(childPath, curDepth + 1);
+                DuFile childrenFile = build(childPath);
                 children.add(childrenFile);
             }
         }

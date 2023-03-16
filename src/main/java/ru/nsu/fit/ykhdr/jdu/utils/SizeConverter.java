@@ -7,19 +7,48 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class SizeConverter {
+    private static class FractionNumber {
+        private enum Dimension {
+            BYTE("B"),
+            KILOBYTE("KiB"),
+            MEGABYTE("MiB"),
+            GIGABYTE("GiB");
 
-    private static final int DELIMITER = 1024;
+            private final String name;
 
-    private enum Dimension {
-        BYTE("B"),
-        KILOBYTE("KiB"),
-        MEGABYTE("MiB"),
-        GIGABYTE("GiB");
+            Dimension(String name) {
+                this.name = name;
+            }
+        }
 
-        private final String name;
+        private int integerPart = 0;
+        private int fractionalPart = 0;
+        private Dimension dimension;
 
-        Dimension(String name) {
-            this.name = name;
+        private static final int DELIMITER = 1024;
+
+        FractionNumber(long bytes){
+            convertBytes(bytes);
+        }
+
+        private void convertBytes(long bytes){
+            int degree = 0;
+            int remainder = 0;
+
+            while (bytes / DELIMITER > 0) {
+                remainder = (int) (bytes % DELIMITER);
+                bytes /= DELIMITER;
+                degree++;
+            }
+
+            fractionalPart = remainder / 100;
+            integerPart = (int) bytes;
+            dimension = Dimension.values()[degree];
+        }
+
+        @Override
+        public String toString() {
+            return integerPart + "."+ fractionalPart + " " + dimension.name;
         }
     }
 
@@ -33,32 +62,6 @@ public class SizeConverter {
      */
 
     public static @NotNull String convertToString(long size) {
-        return convertToDesiredSize(size) + " " + matchDimension(size);
-    }
-
-    private static @NotNull String matchDimension(long size) {
-        return Dimension.values()[countDegree(size)].name;
-    }
-
-    // CR: merge using private static class
-    private static @NotNull String convertToDesiredSize(long size) {
-        int remainder = 0;
-        while (size / DELIMITER > 0) {
-            remainder = (int) (size % DELIMITER);
-            size /= DELIMITER;
-        }
-
-        return size + "." + remainder / 100;
-    }
-
-    private static int countDegree(long number) {
-        int degree = 0;
-
-        while (number / DELIMITER > 0) {
-            number /= DELIMITER;
-            degree++;
-        }
-
-        return degree;
+        return new FractionNumber(size).toString();
     }
 }

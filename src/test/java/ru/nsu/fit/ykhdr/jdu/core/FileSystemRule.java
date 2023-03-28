@@ -1,4 +1,4 @@
-package ru.nsu.fit.ykhr.jdu.core;
+package ru.nsu.fit.ykhdr.jdu.core;
 
 import com.google.common.jimfs.Jimfs;
 import org.junit.rules.TestRule;

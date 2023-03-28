@@ -12,7 +12,8 @@ public class SizeConverter {
             BYTE("B"),
             KILOBYTE("KiB"),
             MEGABYTE("MiB"),
-            GIGABYTE("GiB");
+            GIGABYTE("GiB"),
+            TERABYTE("TB");
 
             private final String name;
 
@@ -21,30 +22,30 @@ public class SizeConverter {
             }
         }
 
-        private int integerPart = 0;
+        private long integerPart;
         private int fractionalPart = 0;
         private Dimension dimension;
 
         private static final int DELIMITER = 1024;
 
-        FractionNumber(long bytes){
-            convertBytes(bytes);
+        FractionNumber(long bytes) {
+            integerPart = bytes;
+            convertBytes();
         }
 
-        private void convertBytes(long bytes){
+        private void convertBytes() {
             int degree = 0;
-            int remainder = 0;
 
-            while (bytes / DELIMITER > 0) {
-                remainder = (int) (bytes % DELIMITER);
-                bytes /= DELIMITER;
+            while (integerPart / DELIMITER > 0) {
+                fractionalPart = (int) (integerPart % DELIMITER);
+                integerPart /= DELIMITER;
                 degree++;
             }
 
-            fractionalPart = remainder / 100;
-            integerPart = (int) bytes;
+            fractionalPart /= 100;
             dimension = Dimension.values()[degree];
         }
+
 
         @Override
         public String toString() {

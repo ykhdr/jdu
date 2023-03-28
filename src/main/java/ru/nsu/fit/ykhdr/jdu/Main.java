@@ -6,10 +6,14 @@ import ru.nsu.fit.ykhdr.jdu.exception.DuIOException;
 import ru.nsu.fit.ykhdr.jdu.model.DuFile;
 import ru.nsu.fit.ykhdr.jdu.options.DuOptions;
 import ru.nsu.fit.ykhdr.jdu.options.OptionsBuilder;
+import ru.nsu.fit.ykhdr.jdu.utils.DuLinker;
 import ru.nsu.fit.ykhdr.jdu.utils.DuTreeBuilder;
 import ru.nsu.fit.ykhdr.jdu.utils.DuTreePrinter;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
@@ -25,9 +29,14 @@ public class Main {
             DuTreeBuilder treeBuilder = new DuTreeBuilder();
             DuTreePrinter printer = new DuTreePrinter(System.out, options.limit(), options.depth(), options.followSymlinks());
 
-            DuFile rootDir = treeBuilder.build(options.root());
-            printer.print(rootDir);
+            Map<Path, DuFile> treeNodes = new HashMap<>();
+            DuFile root = treeBuilder.buildTree(options.root(), treeNodes);
 
+            if (options.followSymlinks()) {
+                DuLinker.linkSymlinks(treeNodes);
+            }
+
+            printer.print(root);
         } catch (DuIOException e) {
             System.err.println(e.getMessage());
         } catch (DuException e) {

@@ -1,13 +1,11 @@
-package ru.nsu.fit.ykhr.jdu;
+package ru.nsu.fit.ykhdr.jdu;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ru.nsu.fit.ykhdr.jdu.core.DuTest;
 import ru.nsu.fit.ykhdr.jdu.utils.SizeConverter;
-import ru.nsu.fit.ykhr.jdu.core.DuTest;
 
 public class SizeConverterTest extends DuTest {
-
-    // CR: max long test
 
     @Test
     public void zeroByteTest() {

@@ -3,7 +3,6 @@ package ru.nsu.fit.ykhdr.jdu.utils;
 import org.jetbrains.annotations.NotNull;
 import ru.nsu.fit.ykhdr.jdu.exception.DuIOException;
 import ru.nsu.fit.ykhdr.jdu.model.*;
-import ru.nsu.fit.ykhdr.jdu.printformat.*;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -19,6 +18,7 @@ public class DuTreePrinter {
     private final int maxDepth;
     private final boolean followSymlinks;
 
+    private static final String INDENT = "  ";
     private static final Comparator<DuFile> COMPARATOR = new DuComparator();
 
     public DuTreePrinter(@NotNull PrintStream printStream, int limit, int maxDepth, boolean followSymlinks) {
@@ -57,24 +57,29 @@ public class DuTreePrinter {
             case DuDirectory directory -> printDirectory(directory, depth);
             case DuSymlink symlink -> printSymlink(symlink, depth);
             case DuRegularFile regularFile -> printRegularFile(regularFile, depth);
+            case DuUnknownFile unknownFile -> printUnknownFile(unknownFile, depth);
         }
     }
 
     private void printDirectory(@NotNull DuDirectory dir, int depth) {
-        printStream.println(FileRepresentation.format(FormattingTemplates.DIR_TEMPLATE, dir, depth));
+        printStream.printf("%s/%s [%s]\n", INDENT.repeat(depth), dir.name(), size(dir));
 
         printCompoundFile(dir, depth + 1);
     }
 
     private void printRegularFile(@NotNull DuRegularFile file, int depth) {
-        printStream.println(FileRepresentation.format(FormattingTemplates.FILE_TEMPLATE, file, depth));
+        printStream.printf("%s%s [%s]\n", INDENT.repeat(depth), file.name(), size(file));
+    }
+
+    private void printUnknownFile(@NotNull DuUnknownFile file, int depth){
+        printStream.printf("%s%s [%s] - Unknown file\n", INDENT.repeat(depth), file.name(), size(file));
     }
 
     private void printSymlink(@NotNull DuSymlink link, int depth) {
-        printStream.println(FileRepresentation.format(FormattingTemplates.SYM_TEMPLATE, link, depth));
+        printStream.printf("%s%s@ -> %s [%s]\n", INDENT.repeat(depth), link.name(), link.getTarget().path(), size(link));
 
-        if (followSymlinks) {
-            printCompoundFile(link, depth + 1);
+        if (followSymlinks && link.getTarget() instanceof DuCompoundFile compoundFile) {
+            printCompoundFile(compoundFile, depth + 1);
         }
     }
 
@@ -83,4 +88,10 @@ public class DuTreePrinter {
         copy.sort(COMPARATOR);
         return copy.subList(0, Math.min(limit, copy.size()));
     }
+
+    private static @NotNull String size(@NotNull DuFile file) {
+        return SizeConverter.convertToString(file.size());
+    }
+
+
 }

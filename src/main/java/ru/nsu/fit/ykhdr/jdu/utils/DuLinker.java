@@ -14,6 +14,7 @@ public class DuLinker {
         for (Map.Entry<Path, DuFile> entry : treeNodes.entrySet()) {
             if (entry.getValue() instanceof DuSymlink symlink) {
                 DuFile target = treeNodes.get(symlink.getTargetPath());
+                // CR: maybe we do not need requireNonNullElseGet?
                 symlink.setTarget(Objects.requireNonNullElseGet(target, () -> new DuUnknownFile(symlink.getTargetPath())));
             }
         }

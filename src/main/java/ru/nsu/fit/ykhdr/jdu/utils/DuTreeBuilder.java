@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  */
 
 public class DuTreeBuilder {
-    private static final Logger logger = Logger.getLogger(DuTreeBuilder.class.getName());
+    private static final Logger LOG = Logger.getLogger(DuTreeBuilder.class.getName());
     private final Set<Path> visited = new HashSet<>();
     private Map<Path, DuFile> treeNodes;
 
@@ -46,6 +46,7 @@ public class DuTreeBuilder {
             return buildRegularFile(toRealPath(path));
         }
 
+        // CR: show size in tree
         DuUnknownFile unknownFile = new DuUnknownFile(path);
         treeNodes.put(path, unknownFile);
         return unknownFile;
@@ -98,10 +99,10 @@ public class DuTreeBuilder {
         try {
             return Files.list(path);
         } catch (AccessDeniedException e) {
-            logger.log(Level.WARNING, "Access to directory/file data denied : " + path);
+            LOG.log(Level.WARNING, "Access to directory/file data denied : " + path);
             return Stream.<Path>builder().build();
         } catch (FileSystemException e) {
-            logger.log(Level.WARNING, "File system operation denied : " + path);
+            LOG.log(Level.WARNING, "File system operation denied : " + path);
             return Stream.<Path>builder().build();
         } catch (IOException e) {
             throw new DuIOException(e);
@@ -122,9 +123,10 @@ public class DuTreeBuilder {
 
     private static @NotNull Path toRealPath(@NotNull Path path) {
         try {
+            // CR: readSymbolicLink
             return path.toRealPath();
         } catch (IOException e) {
-            logger.log(Level.WARNING, e.getMessage() + ": " + path);
+            LOG.log(Level.WARNING, e.getMessage() + ": " + path);
             return path.toAbsolutePath();
         }
     }

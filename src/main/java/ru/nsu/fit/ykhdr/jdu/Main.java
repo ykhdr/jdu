@@ -33,6 +33,7 @@ public class Main {
             DuFile root = treeBuilder.buildTree(options.root(), treeNodes);
 
             if (options.followSymlinks()) {
+                // CR: call from builder
                 DuLinker.linkSymlinks(treeNodes);
             }
 

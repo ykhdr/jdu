@@ -33,12 +33,18 @@ public class SizeConverter {
             convertBytes();
         }
 
+//        private static FractionNumber fromBytes(long bytes) {
+//            convertBytes();
+//            return new FractionNumber(.., .. );
+//        }
+
         private void convertBytes() {
             int degree = 0;
 
             while (integerPart / DELIMITER > 0) {
                 fractionalPart = (int) (integerPart % DELIMITER);
                 integerPart /= DELIMITER;
+                // CR: break when degree is too big
                 degree++;
             }
 
@@ -54,15 +60,13 @@ public class SizeConverter {
     }
 
     /**
-     * Converts the number of bytes to a string representation of the size in a more appropriate dimension.
-     * <p>
-     *
-     * @param size number of bytes to convert.
-     *             <p>
-     * @return String representation of the converted size.
+     * Converts bytes to readable format, e.g. 2048 -> 2.0 MiB.
+     * <p/>
+     * Max first two fraction digits are shown, rounding down (won't show the second one if its zero).
+     * <br/>
+     * Suffix ranges from B (bytes) to TB (terabytes).
      */
-
-    public static @NotNull String convertToString(long size) {
-        return new FractionNumber(size).toString();
+    public static @NotNull String convertToString(long bytes) {
+        return new FractionNumber(bytes).toString();
     }
 }

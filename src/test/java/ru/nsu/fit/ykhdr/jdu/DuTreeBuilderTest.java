@@ -210,7 +210,7 @@ public class DuTreeBuilderTest extends DuTest {
      *   /foo
      *     /bar
      *       /baz.png
-     *     link -> ../bar
+     *     link -> /bar
      */
     @Test
     public void testSymlinkTargetToDirectoryWithFile() throws IOException {

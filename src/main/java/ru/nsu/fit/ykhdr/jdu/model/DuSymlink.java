@@ -5,8 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 
 /**
- * Record that implements the DuFile interface and describes the symbolic link structure.
- * <p>
+ * Represents a symbolic link in the file system.
  */
 public final class DuSymlink implements DuFile {
     private final @NotNull Path path;
@@ -15,10 +14,12 @@ public final class DuSymlink implements DuFile {
     private final long size;
 
     /**
-     * @param path       path to symlink.
-     * @param targetPath path to target of link.
-     * @param target     target of link.
-     * @param size       the size of the file pointed to by the symlink.
+     * Constructs a new {@code DuSymlink} instance with the given parameters.
+     *
+     * @param path       the path to the symbolic link.
+     * @param targetPath the path to the target of the symbolic link.
+     * @param target     the target of the symbolic link.
+     * @param size       the size of the file pointed to by the symbolic link.
      */
     public DuSymlink(@NotNull Path path, @NotNull Path targetPath, @NotNull DuFile target, long size) {
         this.path = path;
@@ -27,14 +28,29 @@ public final class DuSymlink implements DuFile {
         this.size = size;
     }
 
+    /**
+     * Gets the target file of the symbolic link.
+     *
+     * @return the target file of the symbolic link.
+     */
     public @NotNull DuFile getTarget() {
         return target;
     }
 
+    /**
+     * Sets the target file of the symbolic link.
+     *
+     * @param target the target file of the symbolic link.
+     */
     public void setTarget(@NotNull DuFile target) {
         this.target = target;
     }
 
+    /**
+     * Gets the path to the target of the symbolic link.
+     *
+     * @return the path to the target of the symbolic link.
+     */
     public @NotNull Path getTargetPath() {
         return targetPath;
     }

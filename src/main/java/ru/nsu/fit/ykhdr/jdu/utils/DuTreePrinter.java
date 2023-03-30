@@ -1,14 +1,13 @@
 package ru.nsu.fit.ykhdr.jdu.utils;
 
 import org.jetbrains.annotations.NotNull;
-import ru.nsu.fit.ykhdr.jdu.exception.DuIOException;
 import ru.nsu.fit.ykhdr.jdu.model.*;
 
 import java.io.PrintStream;
 import java.util.*;
 
 /**
- * Utility class that prints the directory given to it.
+ * A class for printing the directory tree of a given DuFile.
  */
 
 public class DuTreePrinter {
@@ -21,6 +20,15 @@ public class DuTreePrinter {
     private static final String INDENT = "  ";
     private static final Comparator<DuFile> COMPARATOR = new DuComparator();
 
+
+    /**
+     * Constructs a new DuTreePrinter with the given settings.
+     *
+     * @param printStream    The PrintStream to use for output.
+     * @param limit          The limit on the number of files to display.
+     * @param maxDepth       The maximum depth to display.
+     * @param followSymlinks Whether to follow symbolic links.
+     */
     public DuTreePrinter(@NotNull PrintStream printStream, int limit, int maxDepth, boolean followSymlinks) {
         this.printStream = printStream;
         this.limit = limit;
@@ -29,12 +37,9 @@ public class DuTreePrinter {
     }
 
     /**
-     * Prints the tree of the given directory.
-     * <p>
+     * Prints the directory tree of the given root DuFile.
      *
-     * @param root DuFile root directory for print.
-     *             <p>
-     * @throws DuIOException if the symlink target is not available or set incorrectly.
+     * @param root The root DuFile of the tree to print.
      */
     public void print(@NotNull DuFile root) {
         print(root, 0);
@@ -71,7 +76,7 @@ public class DuTreePrinter {
         printStream.printf("%s%s [%s]\n", INDENT.repeat(depth), file.name(), size(file));
     }
 
-    private void printUnknownFile(@NotNull DuUnknownFile file, int depth){
+    private void printUnknownFile(@NotNull DuUnknownFile file, int depth) {
         printStream.printf("%s%s [%s] - Unknown file\n", INDENT.repeat(depth), file.name(), size(file));
     }
 

@@ -138,7 +138,7 @@ public class DuTreePrinterTest extends DuTest {
         Path link2Path = dir2Path.resolve("link2");
         Files.createSymbolicLink(link2Path, dir1Path);
 
-        DuSymlink link1 = new DuSymlink(link1Path, dir2Path, new DuUnknownFile(dir2Path), 0);
+        DuSymlink link1 = new DuSymlink(link1Path, dir2Path, new DuUnknownFile(dir2Path, 0), 0);
         DuDirectory dir1 = new DuDirectory(dir1Path, List.of(link1), 0);
         DuSymlink link2 = new DuSymlink(link2Path, dir1Path, dir1, 0);
         DuDirectory dir2 = new DuDirectory(dir2Path, List.of(link2), 0);
@@ -175,7 +175,7 @@ public class DuTreePrinterTest extends DuTest {
         Path link2Path = dir2Path.resolve("link2");
         Files.createSymbolicLink(link2Path, dir1Path);
 
-        DuSymlink link1 = new DuSymlink(link1Path, dir2Path, new DuUnknownFile(dir2Path), 0);
+        DuSymlink link1 = new DuSymlink(link1Path, dir2Path, new DuUnknownFile(dir2Path, 0), 0);
         DuDirectory dir1 = new DuDirectory(dir1Path, List.of(link1), 0);
         DuSymlink link2 = new DuSymlink(link2Path, dir1Path, dir1, 0);
         DuDirectory dir2 = new DuDirectory(dir2Path, List.of(link2), 0);

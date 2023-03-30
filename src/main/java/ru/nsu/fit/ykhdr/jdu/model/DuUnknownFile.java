@@ -4,10 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
-public record DuUnknownFile(@NotNull Path path) implements DuFile{
+public record DuUnknownFile(@NotNull Path path, long size) implements DuFile{
     @Override
     public long size() {
-        return 0;
+        return size;
     }
 
     @Override

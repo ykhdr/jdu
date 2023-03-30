@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 
 import static ru.nsu.fit.ykhdr.jdu.core.DuTreeElement.*;
 
@@ -31,7 +30,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createFile(fooPath);
 
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
-        DuFile actual = treeBuilder.buildTree(fooPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(fooPath);
         DuFile expected = tree(fs, file("foo.txt"));
 
         Assert.assertEquals(expected, actual);
@@ -52,7 +51,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createSymbolicLink(linkPath, filePath);
 
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
-        DuFile actual = treeBuilder.buildTree(linkPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(linkPath);
         DuFile expected = tree(fs, link("/link", file("/file.txt")));
 
         Assert.assertEquals(expected.toString(), actual.toString());
@@ -71,7 +70,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createDirectory(dirPath);
         Files.createSymbolicLink(linkPath, dirPath);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
-        DuFile actual = treeBuilder.buildTree(linkPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(linkPath);
         DuFile expected = tree(fs, link("/link", dir("/foo")));
         Assert.assertEquals(expected.toString(), actual.toString());
     }
@@ -87,7 +86,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createDirectory(fooPath);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuFile actual = treeBuilder.buildTree(fooPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(fooPath);
         DuFile expected = tree(fs, dir("foo"));
         Assert.assertEquals(expected, actual);
     }
@@ -106,7 +105,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createFile(barPath);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuFile actual = treeBuilder.buildTree(fooPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(fooPath);
         DuFile expected = tree(fs, dir("foo", file("bar.txt")));
 
         Assert.assertEquals(expected, actual);
@@ -126,7 +125,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createDirectory(firstDirPath);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuFile actual = treeBuilder.buildTree(rootDirPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(rootDirPath);
         DuFile expected = tree(fs, dir("/foo", dir("/foo/bar")));
 
         Assert.assertEquals(expected, actual);
@@ -149,7 +148,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createDirectory(secondDirPath);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuFile actual = treeBuilder.buildTree(rootDirPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(rootDirPath);
         DuFile expected = tree(fs, dir("/foo", dir("/foo/bar"), dir("/foo/baz")));
 
         Assert.assertEquals(expected, actual);
@@ -172,7 +171,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createSymbolicLink(symlinkPath, filePath);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuFile actual = treeBuilder.buildTree(dirPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(dirPath);
 
         DuTreeElement file = file("/foo/bar.txt");
         DuFile expected = tree(fs, dir("/foo", file, link("/foo/link", file)));
@@ -197,7 +196,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createSymbolicLink(symlinkPath, dirPath);
 
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
-        DuFile actual = treeBuilder.buildTree(rootPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(rootPath);
 
         DuTreeElement dir = dir("/foo/bar");
         DuFile expected = tree(fs, dir("/foo", dir, link("/foo/link", dir)));
@@ -225,7 +224,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createSymbolicLink(symlinkPath, dirPath);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuFile actual = treeBuilder.buildTree(rootPath, new HashMap<>());
+        DuFile actual = treeBuilder.buildTree(rootPath);
 
         DuTreeElement file = file("/foo/bar/baz.png");
         DuTreeElement dir = dir("/foo/bar", file);
@@ -252,10 +251,10 @@ public class DuTreeBuilderTest extends DuTest {
 
         // thrown IO exception: too many levels of symbolic links.
         // Returns absolute path -> link1Path
-        DuSymlink actual = (DuSymlink) treeBuilder.buildTree(link1Path, new HashMap<>());
+        DuSymlink actual = (DuSymlink) treeBuilder.buildTree(link1Path);
 
         DuTreeElement linkTarget = link("/link1");
-        DuTreeElement link = link("/link1", linkTarget);
+        DuTreeElement link = link("/link2", linkTarget);
         linkTarget.children().add(link);
 
         DuSymlink expected = (DuSymlink) tree(fs, linkTarget);
@@ -279,7 +278,7 @@ public class DuTreeBuilderTest extends DuTest {
 
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuDirectory actual = (DuDirectory) treeBuilder.buildTree(rootPath, new HashMap<>());
+        DuDirectory actual = (DuDirectory) treeBuilder.buildTree(rootPath);
 
         DuTreeElement root = dir("/foo");
         DuTreeElement link = link("/foo/link", root);
@@ -323,7 +322,7 @@ public class DuTreeBuilderTest extends DuTest {
         Files.createSymbolicLink(link2Path, dir1Path);
         DuTreeBuilder treeBuilder = new DuTreeBuilder();
 
-        DuDirectory actual = (DuDirectory) treeBuilder.buildTree(rootPath, new HashMap<>());
+        DuDirectory actual = (DuDirectory) treeBuilder.buildTree(rootPath);
 
         DuTreeElement dir1 = dir("/foo/bar", link("/foo/bar/link1"));
         DuTreeElement dir2 = dir("/foo/baz", link("/foo/baz/link2", dir1));

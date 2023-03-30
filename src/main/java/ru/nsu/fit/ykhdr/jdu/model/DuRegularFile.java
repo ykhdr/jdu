@@ -5,11 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 
 /**
- * Record that implements the DuFile interface and describes the file structure.
- * <p>
- *
- * @param path absolute path to file.
- * @param size file size.
+ * Represents a regular file in the file system
  */
 public record DuRegularFile(@NotNull Path path, long size) implements DuFile {
 }

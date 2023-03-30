@@ -3,9 +3,8 @@ package ru.nsu.fit.ykhdr.jdu.utils;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Utility class designed to convert the number of bytes to higher in the hierarchy of units in the string representation.
+ * A utility class for converting file sizes from bytes to human-readable formats.
  */
-
 public class SizeConverter {
     private static class FractionNumber {
         private enum Dimension {
@@ -33,18 +32,12 @@ public class SizeConverter {
             convertBytes();
         }
 
-//        private static FractionNumber fromBytes(long bytes) {
-//            convertBytes();
-//            return new FractionNumber(.., .. );
-//        }
-
         private void convertBytes() {
             int degree = 0;
 
-            while (integerPart / DELIMITER > 0) {
+            while (integerPart / DELIMITER > 0 && degree < Dimension.values().length) {
                 fractionalPart = (int) (integerPart % DELIMITER);
                 integerPart /= DELIMITER;
-                // CR: break when degree is too big
                 degree++;
             }
 
@@ -52,10 +45,9 @@ public class SizeConverter {
             dimension = Dimension.values()[degree];
         }
 
-
         @Override
         public String toString() {
-            return integerPart + "."+ fractionalPart + " " + dimension.name;
+            return integerPart + "." + fractionalPart + " " + dimension.name;
         }
     }
 

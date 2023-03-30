@@ -6,14 +6,10 @@ import ru.nsu.fit.ykhdr.jdu.exception.DuIOException;
 import ru.nsu.fit.ykhdr.jdu.model.DuFile;
 import ru.nsu.fit.ykhdr.jdu.options.DuOptions;
 import ru.nsu.fit.ykhdr.jdu.options.OptionsBuilder;
-import ru.nsu.fit.ykhdr.jdu.utils.DuLinker;
 import ru.nsu.fit.ykhdr.jdu.utils.DuTreeBuilder;
 import ru.nsu.fit.ykhdr.jdu.utils.DuTreePrinter;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
 
@@ -29,17 +25,12 @@ public class Main {
             DuTreeBuilder treeBuilder = new DuTreeBuilder();
             DuTreePrinter printer = new DuTreePrinter(System.out, options.limit(), options.depth(), options.followSymlinks());
 
-            Map<Path, DuFile> treeNodes = new HashMap<>();
-            DuFile root = treeBuilder.buildTree(options.root(), treeNodes);
-
-            if (options.followSymlinks()) {
-                // CR: call from builder
-                DuLinker.linkSymlinks(treeNodes);
-            }
+            DuFile root = treeBuilder.buildTree(options.root());
 
             printer.print(root);
         } catch (DuIOException e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
         } catch (DuException e) {
             System.err.println(e.getMessage());
             System.err.println(usage());
@@ -52,9 +43,9 @@ public class Main {
                     dir - root directory for scanning (has default current)
                    
                     options:
-                        - --depth n     - recursive depth (has default limit = 10)
+                        - --depth n     - recursive depth (has default limit = 10), 0 < n < max long
                         - -L            - follow symlinks
-                        - --limit n     - show n the heaviest files and/or dirs (has default limit = 5)
+                        - --limit n     - show n the heaviest files and/or dirs (has default limit = 5), 0 < n < max long
                 """;
     }
 }

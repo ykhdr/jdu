@@ -5,7 +5,7 @@ import ru.nsu.fit.ykhdr.jdu.model.DuFile;
 import java.util.Comparator;
 
 /**
- * Comparator for DuFile size
+ * Comparator that comparing DuFile's by size
  */
 public class DuComparator implements Comparator<DuFile> {
 

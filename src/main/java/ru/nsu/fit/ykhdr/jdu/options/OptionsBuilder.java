@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import org.apache.commons.cli.*;
 
 /**
- * The class, based on the command line arguments given to it, creates a DuOptions object and returns it.
+ * A utility class for building DuOptions instances from command line arguments.
  */
 
 public class OptionsBuilder {
@@ -21,7 +21,8 @@ public class OptionsBuilder {
 
     private static final Options DU_OPTIONS;
 
-    private OptionsBuilder() {}
+    private OptionsBuilder() {
+    }
 
     static {
         Option depthOption = Option.builder()
@@ -48,11 +49,11 @@ public class OptionsBuilder {
     }
 
     /**
-     * Creates a DuOptions object based on command line arguments with filled in options
+     * Parses command line arguments and constructs a new instance of DuOptions.
      * <p>
-     * @return DuOptions with options given on the command line.
-     * <p>
-     * @throws DuArgumentException if given on the command line options are incorrectly.
+     *
+     * @return A new instance of DuOptions representing the parsed arguments.
+     * @throws DuArgumentException     if given on the command line options are incorrectly.
      * @throws DuNumberFormatException if numeric argument parameters are not numbers.
      */
     public static @NotNull DuOptions build(String[] args) {
@@ -79,8 +80,7 @@ public class OptionsBuilder {
     private static @NotNull CommandLine createCommandLine(@NotNull String[] args) {
         try {
             return new DefaultParser().parse(DU_OPTIONS, args);
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             throw new DuArgumentException(e.getMessage());
         }
     }
@@ -97,12 +97,10 @@ public class OptionsBuilder {
         try {
             int num = Integer.parseInt(str);
             if (num < 1) {
-                // CR: range for number?
                 throw new DuNumberFormatException("incorrectly number entered", num);
             }
             return num;
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new DuNumberFormatException("this parameter isn't a number", str);
         }
     }

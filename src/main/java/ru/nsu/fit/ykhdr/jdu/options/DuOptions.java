@@ -10,7 +10,6 @@ import java.nio.file.Path;
  * @param depth The maximum depth to scan.
  * @param limit The maximum number of files to include in the result.
  * @param followSymlinks Whether to follow symbolic links.
- * */
-
+ */
 public record DuOptions(Path root, int depth, int limit, boolean followSymlinks) {
 }

@@ -21,6 +21,7 @@ public final class DuSymlink implements DuFile {
      * @param target     the target of the symbolic link.
      * @param size       the size of the file pointed to by the symbolic link.
      */
+    // CR: just pass target
     public DuSymlink(@NotNull Path path, @NotNull Path targetPath, @NotNull DuFile target, long size) {
         this.path = path;
         this.targetPath = targetPath;

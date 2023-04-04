@@ -7,18 +7,14 @@ import java.nio.file.Path;
 /**
  * The DuFile interface represents a file or directory in the file system.
  * <p/>
- * This interface is part of a sealed hierarchy of classes that represent different types of files,
+ * This interface is a part of a sealed hierarchy of classes that represent different types of files,
  * including regular files, directories, symlinks, and unknown files. Classes that implement this interface must be one of these types.
  */
 public sealed interface DuFile permits DuDirectory, DuRegularFile, DuSymlink, DuUnknownFile {
     /**
      * Returns the size of the file in bytes.
      * <p/>
-     * This method returns the size of the file represented by this object in bytes.
-     * If this object represents a directory, the size of the directory is calculated recursively by summing
-     * the sizes of all the files and subdirectories it contains.
-     *
-     * @return the size of the file in bytes
+     * If this object represents a directory, the size of the directory equals to sum of sizes of containing files.
      */
     long size();
 

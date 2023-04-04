@@ -18,9 +18,10 @@ import java.util.stream.Stream;
  * or directory and recursively builds a tree of {@link DuFile} objects.
  * The resulting {@link DuFile} object at the root of the tree represents the file or directory specified by the input {@link Path}.
  */
-
 public class DuTreeBuilder {
+
     private static final Logger LOG = Logger.getLogger(DuTreeBuilder.class.getName());
+
     private final Set<Path> visited = new HashSet<>();
     private final List<DuSymlink> symlinksWithoutTarget = new ArrayList<>();
     private final Map<Path, DuFile> treeNodes = new HashMap<>();

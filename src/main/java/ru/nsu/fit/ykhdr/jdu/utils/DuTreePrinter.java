@@ -11,6 +11,7 @@ import java.util.*;
  */
 
 public class DuTreePrinter {
+
     private final PrintStream printStream;
 
     private final int limit;

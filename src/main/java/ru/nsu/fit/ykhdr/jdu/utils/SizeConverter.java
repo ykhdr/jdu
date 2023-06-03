@@ -35,8 +35,7 @@ public class SizeConverter {
         private void convertBytes() {
             int degree = 0;
 
-            // CR: still out of bounds
-            while (integerPart / DELIMITER > 0 && degree < Dimension.values().length) {
+            while (integerPart / DELIMITER > 0 && degree < Dimension.values().length - 1) {
                 fractionalPart = (int) (integerPart % DELIMITER);
                 integerPart /= DELIMITER;
                 degree++;

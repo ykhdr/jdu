@@ -9,7 +9,6 @@ import java.nio.file.Path;
  */
 public final class DuSymlink implements DuFile {
     private final @NotNull Path path;
-    private final @NotNull Path targetPath;
     private @NotNull DuFile target;
     private final long size;
 
@@ -17,14 +16,11 @@ public final class DuSymlink implements DuFile {
      * Constructs a new {@code DuSymlink} instance with the given parameters.
      *
      * @param path       the path to the symbolic link.
-     * @param targetPath the path to the target of the symbolic link.
      * @param target     the target of the symbolic link.
      * @param size       the size of the file pointed to by the symbolic link.
      */
-    // CR: just pass target
-    public DuSymlink(@NotNull Path path, @NotNull Path targetPath, @NotNull DuFile target, long size) {
+    public DuSymlink(@NotNull Path path, @NotNull DuFile target, long size) {
         this.path = path;
-        this.targetPath = targetPath;
         this.target = target;
         this.size = size;
     }
@@ -53,7 +49,7 @@ public final class DuSymlink implements DuFile {
      * @return the path to the target of the symbolic link.
      */
     public @NotNull Path getTargetPath() {
-        return targetPath;
+        return target.path();
     }
 
     @Override
@@ -70,7 +66,6 @@ public final class DuSymlink implements DuFile {
     public String toString() {
         return "DuSymlink{" +
                 "path=" + path +
-                ", targetPath=" + targetPath +
                 ", target=" + target +
                 ", size=" + size +
                 '}';

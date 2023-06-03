@@ -28,10 +28,10 @@ public record DuTreeElement(Type type, String path, List<DuTreeElement> children
         Path targetPath = Path.of(treeElement.children().get(0).path);
         DuSymlink symlink;
         if (!visited.add(currentPath)) {
-            symlink = new DuSymlink(currentPath, targetPath, new DuUnknownFile(targetPath, 0), 0);
+            symlink = new DuSymlink(currentPath, new DuUnknownFile(targetPath, 0), 0);
         } else {
             DuFile target = treeElement.children.stream().map(c -> buildTree(c, targetPath, visited)).toList().get(0);
-            symlink = new DuSymlink(currentPath, targetPath, target, target.size());
+            symlink = new DuSymlink(currentPath, target, target.size());
         }
 
         return symlink;

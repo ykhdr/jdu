@@ -109,7 +109,7 @@ public class DuTreePrinterTest extends DuTest {
 
             DuRegularFile file = new DuRegularFile(filePath, 0);
             DuDirectory dir1 = new DuDirectory(dir1Path, List.of(file), 0);
-            DuDirectory dir2 = new DuDirectory(dir2Path, List.of(new DuSymlink(linkPath, filePath, file, 0)), 0);
+            DuDirectory dir2 = new DuDirectory(dir2Path, List.of(new DuSymlink(linkPath, file, 0)), 0);
             DuDirectory root = new DuDirectory(fooPath, List.of(dir1, dir2), 0);
 
             printer.print(root);
@@ -138,9 +138,9 @@ public class DuTreePrinterTest extends DuTest {
         Path link2Path = dir2Path.resolve("link2");
         Files.createSymbolicLink(link2Path, dir1Path);
 
-        DuSymlink link1 = new DuSymlink(link1Path, dir2Path, new DuUnknownFile(dir2Path, 0), 0);
+        DuSymlink link1 = new DuSymlink(link1Path, new DuUnknownFile(dir2Path, 0), 0);
         DuDirectory dir1 = new DuDirectory(dir1Path, List.of(link1), 0);
-        DuSymlink link2 = new DuSymlink(link2Path, dir1Path, dir1, 0);
+        DuSymlink link2 = new DuSymlink(link2Path, dir1, 0);
         DuDirectory dir2 = new DuDirectory(dir2Path, List.of(link2), 0);
         link1.setTarget(dir2);
         DuDirectory root = new DuDirectory(fooPath, List.of(dir1, dir2), 0);
@@ -175,9 +175,9 @@ public class DuTreePrinterTest extends DuTest {
         Path link2Path = dir2Path.resolve("link2");
         Files.createSymbolicLink(link2Path, dir1Path);
 
-        DuSymlink link1 = new DuSymlink(link1Path, dir2Path, new DuUnknownFile(dir2Path, 0), 0);
+        DuSymlink link1 = new DuSymlink(link1Path, new DuUnknownFile(dir2Path, 0), 0);
         DuDirectory dir1 = new DuDirectory(dir1Path, List.of(link1), 0);
-        DuSymlink link2 = new DuSymlink(link2Path, dir1Path, dir1, 0);
+        DuSymlink link2 = new DuSymlink(link2Path, dir1, 0);
         DuDirectory dir2 = new DuDirectory(dir2Path, List.of(link2), 0);
         link1.setTarget(dir2);
         DuDirectory root = new DuDirectory(fooPath, List.of(dir1, dir2), 0);
@@ -227,7 +227,7 @@ public class DuTreePrinterTest extends DuTest {
         DuRegularFile file2 = new DuRegularFile(file2Path, 0);
         DuDirectory bar = new DuDirectory(barPath, List.of(new DuDirectory(bazPath, new ArrayList<>(), 0)), 0);
 
-        DuDirectory dir1 = new DuDirectory(dir1Path, List.of(file1,bar), 0);
+        DuDirectory dir1 = new DuDirectory(dir1Path, List.of(file1, bar), 0);
         DuDirectory dir2 = new DuDirectory(dir2Path, List.of(file2), 0);
 
         DuDirectory root = new DuDirectory(fooPath, List.of(dir1, dir2), 0);
@@ -299,7 +299,7 @@ public class DuTreePrinterTest extends DuTest {
         DuRegularFile file2 = new DuRegularFile(file2Path, 0);
         DuDirectory bar = new DuDirectory(barPath, List.of(new DuDirectory(bazPath, new ArrayList<>(), 0)), 0);
 
-        DuDirectory dir1 = new DuDirectory(dir1Path, List.of(file1,bar), 0);
+        DuDirectory dir1 = new DuDirectory(dir1Path, List.of(file1, bar), 0);
         DuDirectory dir2 = new DuDirectory(dir2Path, List.of(file2), 0);
         DuDirectory dir3 = new DuDirectory(dir3Path, new ArrayList<>(), 0);
 

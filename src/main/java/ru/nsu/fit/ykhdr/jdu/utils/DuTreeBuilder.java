@@ -72,12 +72,12 @@ public class DuTreeBuilder {
         DuSymlink symlink;
 
         if (!visited.add(targetPath)) {
-            symlink = new DuSymlink(path, targetPath, new DuUnknownFile(targetPath, fileSize(targetPath)), fileSize(path));
+            symlink = new DuSymlink(path, new DuUnknownFile(targetPath, fileSize(targetPath)), fileSize(path));
             symlinksWithoutTarget.add(symlink);
         } else {
             DuFile target = build(targetPath);
             treeNodes.put(targetPath, target);
-            symlink = new DuSymlink(path, targetPath, target, target.size());
+            symlink = new DuSymlink(path, target, target.size());
         }
 
         return symlink;
